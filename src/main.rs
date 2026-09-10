@@ -37,6 +37,7 @@ fn main() {
     App::new()
         .add_plugins((DefaultPlugins, TerminalPlugins))
         .insert_resource(ClearColor(Color::BLACK))
+        .insert_resource(Map::default())
         .add_systems(Startup, setup)
         .add_systems(Update, handle_input)
         .add_systems(Update, render)
