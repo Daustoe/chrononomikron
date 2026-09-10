@@ -3,6 +3,35 @@ use bevy_ascii_terminal::*;
 
 mod components;
 use components::*;
+mod map;
+pub use map::*;
+pub mod spatial;
+#[macro_use]
+extern crate lazy_static;
+
+#[derive(PartialEq, Copy, Clone)]
+pub enum RunState {
+    AwaitingInput,
+    PreRun,
+    Ticking,
+    ShowInventory,
+    ShowDropItem,
+    ShowTargeting { range : i32, item : Entity},
+    //MainMenu { menu_selection : gui::MainMenuSelection },
+    SaveGame,
+    NextLevel,
+    PreviousLevel,
+    TownPortal,
+    ShowRemoveItem,
+    GameOver,
+    MagicMapReveal { row : i32 },
+    MapGeneration,
+    ShowCheatMenu,
+    //ShowVendor { vendor: Entity, mode : VendorMode },
+    TeleportingToOtherLevel { x: i32, y: i32, depth: i32 },
+    ShowRemoveCurse,
+    ShowIdentify
+}
 
 fn main() {
     App::new()
@@ -44,7 +73,34 @@ fn handle_input(
     if let Ok((_entity, mut pos)) = q_player.single_mut(){
         if input.just_pressed(KeyCode::Numpad1) {
             pos.x -= 1;
+            pos.y += 1;
+        }
+        if input.just_pressed(KeyCode::Numpad2) {
+            pos.y += 1;
+        }
+        if input.just_pressed(KeyCode::Numpad3) {
+            pos.x += 1;
+            pos.y += 1;
+        }
+        if input.just_pressed(KeyCode::Numpad4) {
+            pos.x -= 1;
+        }
+        if input.just_pressed(KeyCode::Numpad5) {
+            ();
+        }
+        if input.just_pressed(KeyCode::Numpad6) {
+            pos.x += 1;
+        }
+        if input.just_pressed(KeyCode::Numpad7) {
+            pos.x -= 1;
             pos.y -= 1;
+        }
+        if input.just_pressed(KeyCode::Numpad8) {
+            pos.y -= 1;
+        }
+        if input.just_pressed(KeyCode::Numpad9) {
+            pos.x += 1;
+            pos.y -= 1
         }
     }
     if input.just_pressed(KeyCode::Escape) {
@@ -73,8 +129,11 @@ fn render(
     term.set_pivot(Pivot::LeftTop);
 
     for (r, pos) in q_entities.iter() {
-        let Some(tile) = term.try_tile_mut(pos) else {
+        let Some(tile) = term.try_tile_mut(IVec2::from_array([pos.x, pos.y])) else {
             continue;
-        }
+        };
+        tile.glyph = r.glyph;
+        tile.fg_color = r.fg;
+        tile.bg_color = r.bg;
     }
 }
