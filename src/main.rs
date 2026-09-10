@@ -6,10 +6,15 @@ use components::*;
 mod map;
 pub use map::*;
 pub mod spatial;
+pub mod map_builders;
+use map_builders::*;
+pub mod constants;
+pub mod rect;
+pub mod rng;
 #[macro_use]
 extern crate lazy_static;
 
-#[derive(PartialEq, Copy, Clone)]
+#[derive(States, Debug, Hash, Eq, PartialEq, Copy, Clone)]
 pub enum RunState {
     AwaitingInput,
     PreRun,
@@ -17,7 +22,7 @@ pub enum RunState {
     ShowInventory,
     ShowDropItem,
     ShowTargeting { range : i32, item : Entity},
-    //MainMenu { menu_selection : gui::MainMenuSelection },
+    MainMenu,
     SaveGame,
     NextLevel,
     PreviousLevel,
@@ -37,7 +42,8 @@ fn main() {
     App::new()
         .add_plugins((DefaultPlugins, TerminalPlugins))
         .insert_resource(ClearColor(Color::BLACK))
-        .insert_resource(Map::default())
+        //.insert_resource(Map::default())
+        .insert_state(RunState::MainMenu)
         .add_systems(Startup, setup)
         .add_systems(Update, handle_input)
         .add_systems(Update, render)
@@ -63,6 +69,8 @@ fn setup(mut commands: Commands) {
         },
         Player {}
     ));
+    let mut builder = level_builder(0, 160, 50);
+    commands.insert_resource(builder.build_data.map);
 }
 
 fn handle_input(
@@ -118,7 +126,8 @@ fn handle_input(
 
 fn render(
     mut q_term: Query<&mut Terminal>,
-    q_player: Query<Entity, With<Player>>,
+    _q_player: Query<Entity, With<Player>>,
+    map: Res<Map>,
     q_entities: Query<(&Renderable, &Position)>
 ) {
     let mut term = match q_term.single_mut() {
@@ -128,6 +137,8 @@ fn render(
 
     term.clear();
     term.set_pivot(Pivot::LeftTop);
+
+    //TODO: need to figure out how to draw the maps now that I have them in my ecs.
 
     for (r, pos) in q_entities.iter() {
         let Some(tile) = term.try_tile_mut(IVec2::from_array([pos.x, pos.y])) else {
