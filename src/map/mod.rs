@@ -3,6 +3,8 @@ mod tiletype;
 use std::collections::HashSet;
 pub use tiletype::{TileType, tile_walkable, tile_cost, tile_opaque};
 use rltk::{BaseMap, Algorithm2D, Point};
+mod themes;
+pub use themes::*;
 
 #[derive(Resource, Default, Clone)]
 pub struct Map {

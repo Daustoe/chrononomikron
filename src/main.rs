@@ -69,7 +69,7 @@ fn setup(mut commands: Commands) {
         },
         Player {}
     ));
-    let mut builder = level_builder(0, 160, 50);
+    let builder = level_builder(0, 160, 100);
     commands.insert_resource(builder.build_data.map);
 }
 
@@ -139,6 +139,17 @@ fn render(
     term.set_pivot(Pivot::LeftTop);
 
     //TODO: need to figure out how to draw the maps now that I have them in my ecs.
+    for x in 0..map.width {
+        for y in 0..map.height {
+            let tile_data = tile_glyph(map.xy_idx(x, y), &map);
+            let Some(tile) = term.try_tile_mut(IVec2::from_array([x, y])) else {
+                continue;
+            };
+            tile.glyph = tile_data.0;
+            tile.fg_color = tile_data.1;
+            tile.bg_color = tile_data.2;
+        }
+    }
 
     for (r, pos) in q_entities.iter() {
         let Some(tile) = term.try_tile_mut(IVec2::from_array([pos.x, pos.y])) else {

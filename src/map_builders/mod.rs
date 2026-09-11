@@ -253,6 +253,7 @@ fn random_shape_builder(builder: &mut BuilderChain) {
 }
 
 pub fn random_builder(new_depth: i32, width: i32, height: i32) -> BuilderChain {
+    println!("Inside random_builder!");
     let mut builder = BuilderChain::new(new_depth, width, height, "New Map");
     let type_roll = crate::rng::roll_dice(1, 2);
     match type_roll {
