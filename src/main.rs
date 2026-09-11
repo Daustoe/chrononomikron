@@ -42,13 +42,11 @@ fn main() {
     App::new()
         .add_plugins((DefaultPlugins, TerminalPlugins))
         .insert_resource(ClearColor(Color::BLACK))
-        //.insert_resource(Map::default())
         .insert_state(RunState::MainMenu)
         .add_systems(Startup, setup)
         .add_systems(Update, handle_input)
         .add_systems(Update, render)
         .run();
-    println!("Hello, world!");
 }
 
 fn setup(mut commands: Commands) {
@@ -69,7 +67,10 @@ fn setup(mut commands: Commands) {
         },
         Player {}
     ));
-    let builder = level_builder(0, 160, 100);
+    let mut builder = random_builder(0, 160, 100);
+    //builder.start_with(SimpleMapBuilder::new());
+    //builder.with(StartingPosition::new(XStart::CENTER, YStart::CENTER));
+    builder.build_map();
     commands.insert_resource(builder.build_data.map);
 }
 
@@ -138,7 +139,6 @@ fn render(
     term.clear();
     term.set_pivot(Pivot::LeftTop);
 
-    //TODO: need to figure out how to draw the maps now that I have them in my ecs.
     for x in 0..map.width {
         for y in 0..map.height {
             let tile_data = tile_glyph(map.xy_idx(x, y), &map);

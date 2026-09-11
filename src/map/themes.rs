@@ -142,33 +142,35 @@ fn get_tile_glyph_default(idx: usize, map : &Map) -> (char, LinearRgba, LinearRg
 }
 
 fn wall_glyph(map : &Map, x: i32, y:i32) -> char {
-    if x < 1 || x > map.width-2 || y < 1 || y > map.height-2 as i32 { return '#'; }
-    let mut mask : u8 = 0;
 
-    if is_revealed_and_wall(map, x, y - 1) { mask +=1; }
-    if is_revealed_and_wall(map, x, y + 1) { mask +=2; }
-    if is_revealed_and_wall(map, x - 1, y) { mask +=4; }
-    if is_revealed_and_wall(map, x + 1, y) { mask +=8; }
+    // if x < 1 || x >= map.width-2 || y < 1 || y >= map.height-2 as i32 { return '#'; }
+    // let mut mask : u8 = 0;
 
-    match mask {
-        0 => { 'I' } // Pillar because we can't see neighbors
-        1 => { '║' } // Wall only to the north
-        2 => { '║' } // Wall only to the south
-        3 => { '║' } // Wall to the north and south
-        4 => { '═' } // Wall only to the west
-        5 => { '╝' } // Wall to the north and west
-        6 => { '╗' } // Wall to the south and west
-        7 => { '╣' } // Wall to the north, south and west
-        8 => { '═' } // Wall only to the east
-        9 => { '╚' } // Wall to the north and east
-        10 => { '╔' } // Wall to the south and east
-        11 => { '╠' } // Wall to the north, south and east
-        12 => { '═' } // Wall to the east and west
-        13 => { '╩' } // Wall to the east, west, and south
-        14 => { '╦' } // Wall to the east, west, and north
-        15 => { '╬' }  // ╬ Wall on all sides
-        _ => { '#' } // We missed one?
-    }
+    // if is_revealed_and_wall(map, x, y - 1) { mask +=1; }
+    // if is_revealed_and_wall(map, x, y + 1) { mask +=2; }
+    // if is_revealed_and_wall(map, x - 1, y) { mask +=4; }
+    // if is_revealed_and_wall(map, x + 1, y) { mask +=8; }
+
+    // match mask {
+    //     0 => { 'I' } // Pillar because we can't see neighbors
+    //     1 => { '║' } // Wall only to the north
+    //     2 => { '║' } // Wall only to the south
+    //     3 => { '║' } // Wall to the north and south
+    //     4 => { '═' } // Wall only to the west
+    //     5 => { '╝' } // Wall to the north and west
+    //     6 => { '╗' } // Wall to the south and west
+    //     7 => { '╣' } // Wall to the north, south and west
+    //     8 => { '═' } // Wall only to the east
+    //     9 => { '╚' } // Wall to the north and east
+    //     10 => { '╔' } // Wall to the south and east
+    //     11 => { '╠' } // Wall to the north, south and east
+    //     12 => { '═' } // Wall to the east and west
+    //     13 => { '╩' } // Wall to the east, west, and south
+    //     14 => { '╦' } // Wall to the east, west, and north
+    //     15 => { '╬' }  // ╬ Wall on all sides
+    //     _ => { '#' } // We missed one?
+    // }
+    return '#'
 }
 
 fn is_revealed_and_wall(map: &Map, x: i32, y: i32) -> bool {

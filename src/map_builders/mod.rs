@@ -3,12 +3,12 @@ use super::constants::SHOW_MAPGEN_VISUALIZER;
 use super::rect::Rect;
 //use bevy::ecs::prelude::*;
 
-mod starting_points;
-use starting_points::*;
+pub mod starting_points;
+pub use starting_points::*;
 mod room_sorter;
 use room_sorter::*;
 mod simple_map;
-use simple_map::SimpleMapBuilder;
+pub use simple_map::SimpleMapBuilder;
 mod bsp_dungeon;
 use bsp_dungeon::BspDungeonBuilder;
 mod bsp_interior;
@@ -252,8 +252,16 @@ fn random_shape_builder(builder: &mut BuilderChain) {
     builder.with(DistantExit::new());
 }
 
+pub fn test_builder (new_depth: i32, width: i32, height: i32) -> BuilderChain {
+    println!("Testing Builders!");
+    let mut builder = BuilderChain::new(new_depth, width, height, "Test Map");
+    builder.start_with(DrunkardsWalkBuilder::open_area());
+    builder.with(StartingPosition::new(XStart::CENTER, YStart::CENTER));
+    builder.with(CullUnreachable::new());
+    builder
+}
+
 pub fn random_builder(new_depth: i32, width: i32, height: i32) -> BuilderChain {
-    println!("Inside random_builder!");
     let mut builder = BuilderChain::new(new_depth, width, height, "New Map");
     let type_roll = crate::rng::roll_dice(1, 2);
     match type_roll {
