@@ -1,5 +1,6 @@
 use bevy::{prelude::*, window::WindowMode};
 use bevy_ascii_terminal::*;
+use bevy_rand::prelude::*;
 
 mod components;
 use components::*;
@@ -40,7 +41,7 @@ pub enum RunState {
 
 fn main() {
     App::new()
-        .add_plugins((DefaultPlugins, TerminalPlugins))
+        .add_plugins((DefaultPlugins, TerminalPlugins, EntropyPlugin::<WyRand>::new()))
         .insert_resource(ClearColor(Color::BLACK))
         .insert_state(RunState::MainMenu)
         .add_systems(Startup, setup)
