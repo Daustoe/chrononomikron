@@ -38,7 +38,7 @@ impl Map {
     fn is_exit_valid(&self, x:i32, y:i32) -> bool {
         if x < 1 || x > self.width-1 || y < 1 || y > self.height-1 { return false; }
         let idx = self.xy_idx(x, y);
-        !crate::spatial::is_blocked(idx)
+        !self.is_blocked(idx)
     }
 
     pub fn index_entity(&mut self, entity: Entity, idx: usize, blocks_tile: bool) {
@@ -113,7 +113,6 @@ impl Map {
 
     pub fn new<S: ToString>(new_depth: i32, width: i32, height: i32, name: S) -> Map {
         let map_tile_count = (width*height) as usize;
-        crate::spatial::set_size(map_tile_count);
         Map {
             tiles: vec![TileType::Wall; map_tile_count],
             width,

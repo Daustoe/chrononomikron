@@ -6,7 +6,6 @@ mod components;
 use components::*;
 mod map;
 pub use map::*;
-pub mod spatial;
 pub mod map_builders;
 use map_builders::*;
 pub mod constants;
