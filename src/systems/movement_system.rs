@@ -2,6 +2,7 @@ use bevy::ecs::{entity::Entity, prelude::Component, system::Query};
 use bevy::prelude::*;
 
 use crate::components::Position;
+use crate::Map;
 
 #[derive(Component)]
 struct EntityMoved {}
@@ -19,12 +20,16 @@ pub struct WantsToMove {
 
 pub fn movement_system(
     mut events: MessageReader<WantsToMove>,
-    mut movers: Query<(Entity, &mut Position)>
+    mut movers: Query<(Entity, &mut Position)>,
+    map: Res<Map>
 ) {
     for msg in events.read() {
         if let Ok((_mov_ent, mut position)) = movers.get_mut(msg.entity) {
-            position.x = msg.destination.x;
-            position.y = msg.destination.y;
+            let dest_idx = map.xy_idx(msg.destination.x, msg.destination.y);
+            if !map.is_blocked(dest_idx){
+                position.x = msg.destination.x;
+                position.y = msg.destination.y;
+            }
         }
     }
 }
