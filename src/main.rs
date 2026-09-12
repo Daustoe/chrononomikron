@@ -47,6 +47,7 @@ fn main() {
         .add_plugins((DefaultPlugins, TerminalPlugins, EntropyPlugin::<WyRand>::default()))
         .insert_resource(ClearColor(Color::BLACK))
         .insert_state(RunState::MainMenu)
+        .add_message::<WantsToMove>()
         .add_systems(Startup, setup)
         .add_systems(Update, handle_input)
         .add_systems(Update, movement_system)

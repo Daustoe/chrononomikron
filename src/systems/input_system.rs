@@ -9,6 +9,7 @@ pub fn handle_input(
     input: Res<ButtonInput<KeyCode>>,
     mut win: Single<&mut Window>,
     mut exit: MessageWriter<AppExit>,
+    mut wants_move: MessageWriter<WantsToMove>
 ) {
     if let Ok((player_entity, mut pos)) = q_player.single_mut(){
         let mut new_pos = pos.clone();
@@ -45,7 +46,7 @@ pub fn handle_input(
         }
 
         if new_pos != *pos {
-            commands.spawn(WantsToMove{entity: player_entity, destination: new_pos});
+            wants_move.write(WantsToMove{entity: player_entity, destination: new_pos});
         }
     }
     if input.just_pressed(KeyCode::Escape) {

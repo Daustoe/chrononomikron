@@ -11,24 +11,20 @@ pub struct ApplyMove {
     pub dest_idx: usize
 }
 
-#[derive(Component)]
+#[derive(Message)]
 pub struct WantsToMove {
     pub entity: Entity,
     pub destination: Position
 }
 
 pub fn movement_system(
-    mut commands: Commands,
-    wants_move: Query<(Entity, &WantsToMove)>,
+    mut events: MessageReader<WantsToMove>,
     mut movers: Query<(Entity, &mut Position)>
 ) {
-    for (want_move_entity, wants_to_move) in wants_move.iter() {
-        if let Ok((_mov_ent, mut position)) = movers.get_mut(wants_to_move.entity) {
-            position.x = wants_to_move.destination.x;
-            position.y = wants_to_move.destination.y;
+    for msg in events.read() {
+        if let Ok((_mov_ent, mut position)) = movers.get_mut(msg.entity) {
+            position.x = msg.destination.x;
+            position.y = msg.destination.y;
         }
-        commands.entity(want_move_entity).remove::<Children>().despawn();
     }
-
-    
 }
