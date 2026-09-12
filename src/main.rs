@@ -12,6 +12,9 @@ use map_builders::*;
 pub mod constants;
 pub mod rect;
 pub mod rng;
+mod systems;
+use systems::input_system::*;
+use systems::movement_system::*;
 #[macro_use]
 extern crate lazy_static;
 
@@ -41,16 +44,17 @@ pub enum RunState {
 
 fn main() {
     App::new()
-        .add_plugins((DefaultPlugins, TerminalPlugins, EntropyPlugin::<WyRand>::new()))
+        .add_plugins((DefaultPlugins, TerminalPlugins, EntropyPlugin::<WyRand>::default()))
         .insert_resource(ClearColor(Color::BLACK))
         .insert_state(RunState::MainMenu)
         .add_systems(Startup, setup)
         .add_systems(Update, handle_input)
+        .add_systems(Update, movement_system)
         .add_systems(Update, render)
         .run();
 }
 
-fn setup(mut commands: Commands) {
+fn setup(mut commands: Commands, mut global_rng: GlobalRngEntity<WyRand>) {
     commands.spawn(Terminal::new([160, 100])
             .with_border(BoxStyle::SINGLE_LINE)
             //.with_title(" [<fg=4d65b4>Chrononomikron</fg>]"),
@@ -73,58 +77,10 @@ fn setup(mut commands: Commands) {
     //builder.with(StartingPosition::new(XStart::CENTER, YStart::CENTER));
     builder.build_map();
     commands.insert_resource(builder.build_data.map);
+
+    //global_rng.rng_commands().with_target_rngs(targets)
 }
 
-fn handle_input(
-    mut q_player: Query<(Entity, &mut Position), With<Player>>,
-    input: Res<ButtonInput<KeyCode>>,
-    mut win: Single<&mut Window>,
-    mut exit: MessageWriter<AppExit>,
-) {
-    if let Ok((_entity, mut pos)) = q_player.single_mut(){
-        if input.just_pressed(KeyCode::Numpad1) {
-            pos.x -= 1;
-            pos.y += 1;
-        }
-        if input.just_pressed(KeyCode::Numpad2) {
-            pos.y += 1;
-        }
-        if input.just_pressed(KeyCode::Numpad3) {
-            pos.x += 1;
-            pos.y += 1;
-        }
-        if input.just_pressed(KeyCode::Numpad4) {
-            pos.x -= 1;
-        }
-        if input.just_pressed(KeyCode::Numpad5) {
-            ();
-        }
-        if input.just_pressed(KeyCode::Numpad6) {
-            pos.x += 1;
-        }
-        if input.just_pressed(KeyCode::Numpad7) {
-            pos.x -= 1;
-            pos.y -= 1;
-        }
-        if input.just_pressed(KeyCode::Numpad8) {
-            pos.y -= 1;
-        }
-        if input.just_pressed(KeyCode::Numpad9) {
-            pos.x += 1;
-            pos.y -= 1
-        }
-    }
-    if input.just_pressed(KeyCode::Escape) {
-        exit.write(AppExit::Success);
-    }
-    if input.just_pressed(KeyCode::KeyF) {
-        if win.mode == WindowMode::BorderlessFullscreen(MonitorSelection::Current) {
-            win.mode = WindowMode::Windowed;
-        } else {
-            win.mode = WindowMode::BorderlessFullscreen(MonitorSelection::Current);
-        }
-    }
-}
 
 fn render(
     mut q_term: Query<&mut Terminal>,
