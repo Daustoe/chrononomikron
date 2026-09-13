@@ -17,6 +17,8 @@ use systems::movement_system::*;
 use systems::render_system::render;
 mod asset_loader;
 use asset_loader::*;
+
+use crate::systems::visibility_system::visibility_system;
 #[macro_use]
 extern crate lazy_static;
 
@@ -59,6 +61,7 @@ fn main() {
         .add_systems(Update, handle_input)
         .add_systems(Update, movement_system)
         .add_systems(Update, render)
+        .add_systems(Update, visibility_system)
         .run();
 }
 
@@ -78,7 +81,12 @@ fn setup(mut commands: Commands, mut global_rng: GlobalRngEntity<WyRand>) {
             fg: color::css::YELLOW,
             bg: color::css::BLACK
         },
-        Player {}
+        Player {},
+        Viewshed {
+            visible_tiles: Vec::new(),
+            range: 8,
+            dirty: true
+        },
     ));
     commands.insert_resource(builder.build_data.map);
 }

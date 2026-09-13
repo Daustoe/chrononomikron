@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use serde::Deserialize;
 use std::cmp;
+use rltk::Point;
 
 #[derive(Component, Debug, Clone, Eq)]
 pub struct Position {
@@ -11,6 +12,24 @@ pub struct Position {
 impl cmp::PartialEq<Position> for Position {
     fn eq(&self, other: &Self) -> bool {
         self.x == other.x && self.y == other.y
+    }
+}
+
+impl From<Position> for Point {
+    fn from(position: Position) -> Self {
+        Self {
+            x: position.x,
+            y: position.y,
+        }
+    }
+}
+
+impl From<Point> for Position {
+    fn from(point: Point) -> Self {
+        Self {
+            x: point.x,
+            y: point.y,
+        }
     }
 }
 
@@ -25,6 +44,13 @@ pub struct Renderable {
 
 #[derive(Component, Clone)]
 pub struct Player {}
+
+#[derive(Component, Clone)]
+pub struct Viewshed {
+    pub visible_tiles: Vec::<Position>, 
+    pub range: i32,
+    pub dirty: bool
+}
 
 // Example of deserializer for LinearRgba
 // fn deserialize_hex_color<'de, D>(deserializer: D) -> Result<LinearRgba, D::Error>
