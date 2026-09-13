@@ -4,14 +4,13 @@ use crate::{Position, Player};
 use super::WantsToMove;
 
 pub fn handle_input(
-    mut commands: Commands,
     mut q_player: Query<(Entity, &mut Position), With<Player>>,
     input: Res<ButtonInput<KeyCode>>,
     mut win: Single<&mut Window>,
     mut exit: MessageWriter<AppExit>,
     mut wants_move: MessageWriter<WantsToMove>
 ) {
-    if let Ok((player_entity, mut pos)) = q_player.single_mut(){
+    if let Ok((player_entity, pos)) = q_player.single_mut(){
         let mut new_pos = pos.clone();
         if input.just_pressed(KeyCode::Numpad1) {
             new_pos.x -= 1;

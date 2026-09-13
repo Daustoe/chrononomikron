@@ -15,6 +15,8 @@ mod systems;
 use systems::input_system::*;
 use systems::movement_system::*;
 use systems::render_system::render;
+mod asset_loader;
+use asset_loader::*;
 #[macro_use]
 extern crate lazy_static;
 
@@ -48,7 +50,12 @@ fn main() {
         .insert_resource(ClearColor(Color::BLACK))
         .insert_state(RunState::MainMenu)
         .add_message::<WantsToMove>()
-        .add_systems(Startup, setup)
+        .add_systems(Startup,
+            (
+                load_npc_definitions,
+                setup,
+                spawn_villager,
+            ).chain(),)
         .add_systems(Update, handle_input)
         .add_systems(Update, movement_system)
         .add_systems(Update, render)
@@ -74,4 +81,23 @@ fn setup(mut commands: Commands, mut global_rng: GlobalRngEntity<WyRand>) {
         Player {}
     ));
     commands.insert_resource(builder.build_data.map);
+}
+
+fn spawn_villager(
+    mut commands: Commands,
+    definitions: Res<NpcDefinitions>
+) {
+    let Some(villager) = definitions.npcs.get("villager")
+    else {
+        return;
+    };
+
+    let Some(renderable) = &villager.renderable else {
+        return;
+    };
+
+    commands.spawn((
+        Position {x: 80, y: 50},
+        *renderable,
+    ));
 }

@@ -1,16 +1,16 @@
-use bevy::ecs::{entity::Entity, prelude::Component, system::Query};
+use bevy::ecs::{entity::Entity, system::Query};
 use bevy::prelude::*;
 
 use crate::components::Position;
 use crate::Map;
 
-#[derive(Component)]
-struct EntityMoved {}
+// #[derive(Component)]
+// struct EntityMoved {}
 
-#[derive(Component)]
-pub struct ApplyMove {
-    pub dest_idx: usize
-}
+// #[derive(Component)]
+// pub struct ApplyMove {
+//     pub dest_idx: usize
+// }
 
 #[derive(Message)]
 pub struct WantsToMove {
