@@ -29,6 +29,10 @@ impl Map {
         (y as usize * self.width as usize) + x as usize
     }
 
+    pub fn idx_xy(&self, idx: usize) -> (i32, i32) {
+        (idx as i32 % self.width, idx as i32 / self.width)
+    }
+
     pub fn populate_blocked(&mut self) {
         for (i, tile) in self.tiles.iter().enumerate() {
             self.blocked[i].0 = !tile_walkable(*tile);
@@ -142,8 +146,7 @@ impl BaseMap for Map {
     fn get_available_exits(&self, idx:usize) -> rltk::SmallVec<[(usize, f32); 10]> {
         const DIAGONAL_COST : f32 = 1.5;
         let mut exits = rltk::SmallVec::new();
-        let x = idx as i32 % self.width;
-        let y = idx as i32 / self.width;
+        let (x, y) = self.idx_xy(idx);
         let tt = self.tiles[idx as usize];
         let w = self.width as usize;
 

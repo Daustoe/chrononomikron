@@ -17,6 +17,7 @@ use systems::movement_system::*;
 use systems::render_system::render;
 mod asset_loader;
 use asset_loader::*;
+use systems::ai::default_move_system::{MoveMode, Movement, default_move_ai_system};
 
 use crate::systems::visibility_system::visibility_system;
 #[macro_use]
@@ -62,6 +63,7 @@ fn main() {
         .add_systems(Update, movement_system)
         .add_systems(Update, render)
         .add_systems(Update, visibility_system)
+        .add_systems(Update, default_move_ai_system)
         .run();
 }
 
@@ -71,7 +73,7 @@ fn setup(mut commands: Commands, mut global_rng: GlobalRngEntity<WyRand>) {
             //.with_title(" [<fg=4d65b4>Chrononomikron</fg>]"),
     );
     commands.spawn(TerminalCamera::new());
-    let mut builder = random_builder(0, 160, 100);
+    let mut builder = test_builder(0, 160, 100);
     builder.build_map();
     let start_pos = builder.build_data.starting_position.unwrap();
     commands.spawn((
@@ -104,8 +106,11 @@ fn spawn_villager(
         return;
     };
 
+
+
     commands.spawn((
         Position {x: 80, y: 50},
         *renderable,
+        MoveMode { mode: villager.movement.clone() },
     ));
 }

@@ -7,6 +7,7 @@
             bg: (red: 0., green: 0., blue: 0., alpha: 1.)
         )),
         blocks_tile: true,
+        movement: RandomWaypoint(path: None),
         gold: Some("2d6"),
         health: Some(50),
         mana: None
@@ -20,6 +21,7 @@
             bg: (red: 0., green: 0., blue: 0., alpha: 1.)
         )),
         blocks_tile: true,
+        movement: RandomWaypoint(path: None),
         gold: Some("1d6"),
         health: Some(10),
         mana: Some(10)

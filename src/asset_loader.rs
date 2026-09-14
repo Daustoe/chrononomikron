@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use serde::Deserialize;
 use std::collections::HashMap;
-use crate::Renderable;
+use crate::{Renderable, Movement};
 
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
@@ -10,6 +10,7 @@ pub struct NpcDefinition {
     #[serde(default)]
     pub renderable: Option<Renderable>,
     pub blocks_tile: bool,
+    pub movement: Movement,
     #[serde(default)]
     pub gold: Option<String>,
     #[serde(default)]

@@ -258,6 +258,7 @@ pub fn test_builder (new_depth: i32, width: i32, height: i32) -> BuilderChain {
     builder.start_with(DrunkardsWalkBuilder::open_area());
     builder.with(StartingPosition::new(XStart::CENTER, YStart::CENTER));
     builder.with(CullUnreachable::new());
+    builder.with(DistantExit::new());
     builder
 }
 
