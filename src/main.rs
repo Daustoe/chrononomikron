@@ -47,6 +47,11 @@ pub enum RunState {
     ShowIdentify
 }
 
+#[derive(Resource)]
+pub struct GameState {
+    state: RunState
+}
+
 fn main() {
     App::new()
         .add_plugins((DefaultPlugins, TerminalPlugins, EntropyPlugin::<WyRand>::default()))
