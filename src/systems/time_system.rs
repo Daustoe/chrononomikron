@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use std::collections::VecDeque;
+use crate::{Player, RunState};
 
 #[derive(Component)]
 pub struct Speed {
@@ -14,10 +15,15 @@ pub struct Energy {
 #[derive(Component, Debug, Default)]
 pub struct Actor;
 
+#[derive(Resource, Default)]
+struct Clock {
+    now: i32,
+}
+
 #[derive(Component, Debug)]
 pub struct MyTurn;
 
-#[derive(Resource, Debug)]
+#[derive(Resource, Debug, Default)]
 pub struct TimeManager {
     pub queue: VecDeque<Entity>
 }
@@ -51,11 +57,29 @@ fn setup (mut commands: Commands) {
 
 pub fn time_plugin(app: &mut App) {
     app.add_systems(Startup, setup);
-    app.add_systems(Update, time_system);
+    app.init_resource::<TimeManager>();
+    app.init_resource::<Clock>();
+    app.add_systems(Update, time_system.run_if(in_state(RunState::Ticking)));
 }
 
 pub fn time_system(
-    mut time_manager: ResMut<TimeManager>
+    mut commands: Commands,
+    mut queue: ResMut<TimeManager>,
+    query: Query<&Player>,
+    mut run_state: ResMut<NextState<RunState>>,
+    //mut clock: ResMut<Clock>,
+    //mut actors: Query<(Entity, &Actor, Option<&Player>)>
 ) {
+    let Some(entity) = queue.pop() else {
+        return;
+    };
+
+
+    if let Ok(_player) = query.get(entity) {
+        run_state.set(RunState::AwaitingInput);
+    }
+    commands.entity(entity).insert(MyTurn);
+    
+    queue.push(entity);
     
 }

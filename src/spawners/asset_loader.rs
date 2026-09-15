@@ -3,8 +3,14 @@ use serde::Deserialize;
 use std::collections::HashMap;
 use crate::{Renderable, Movement};
 
+#[derive(Debug, Hash, Eq, PartialEq, Deserialize)]
+pub enum NPC {
+    Villager,
+    Goblin
+}
+
 #[allow(dead_code)]
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct NpcDefinition {
     pub name: String,
     #[serde(default)]
@@ -21,14 +27,14 @@ pub struct NpcDefinition {
 
 #[derive(Resource, Debug)]
 pub struct NpcDefinitions {
-    pub npcs: HashMap<String, NpcDefinition>,
+    pub npcs: HashMap<NPC, NpcDefinition>,
 }
 
 pub fn load_npc_definitions(mut commands: Commands) {
     let text = std::fs::read_to_string("assets/definitions/npcs.ron")
         .expect("Failed to read NPC definitions");
 
-    let npcs: HashMap<String, NpcDefinition> =
+    let npcs: HashMap<NPC, NpcDefinition> =
         ron::from_str(&text)
             .expect("Failed to parse NPC definitions");
 

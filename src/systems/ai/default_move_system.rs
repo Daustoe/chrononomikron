@@ -8,7 +8,7 @@ pub enum Movement {
     Random,
     RandomWaypoint{ path: Option<Vec<usize>> }
 }
-#[derive(Component)]
+#[derive(Component, Debug)]
 pub struct MoveMode {
     pub mode: Movement
 }

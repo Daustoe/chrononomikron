@@ -6,3 +6,4 @@ pub mod visibility_system;
 pub mod ai;
 pub use ai::default_move_system::*;
 pub mod time_system;
+pub use time_system::*;

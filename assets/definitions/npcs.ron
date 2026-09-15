@@ -1,5 +1,5 @@
 {
-    "goblin": (
+    Goblin: (
         name: "Goblin",
         renderable: Some((
             glyph: 'g',
@@ -13,7 +13,7 @@
         mana: None
     ),
 
-    "villager": (
+    Villager: (
         name: "Villager",
         renderable: Some((
             glyph: '@',

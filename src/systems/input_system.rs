@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy::window::WindowMode;
-use crate::{Position, Player, RunState};
+use crate::{Position, Player, RunState, SpawnNpc, NPC};
 use super::WantsToMove;
 
 pub fn handle_input(
@@ -9,55 +9,63 @@ pub fn handle_input(
     mut win: Single<&mut Window>,
     mut exit: MessageWriter<AppExit>,
     mut wants_move: MessageWriter<WantsToMove>,
-    mut next_state: ResMut<NextState<RunState>>
+    mut next_state: ResMut<NextState<RunState>>,
+    mut spawn: MessageWriter<SpawnNpc>
 ) {
-    if let Ok((player_entity, pos)) = q_player.single_mut(){
-        let mut new_pos = pos.clone();
-        if input.just_pressed(KeyCode::Numpad1) {
-            new_pos.x -= 1;
-            new_pos.y += 1;
-        }
-        if input.just_pressed(KeyCode::Numpad2) {
-            new_pos.y += 1;
-        }
-        if input.just_pressed(KeyCode::Numpad3) {
-            new_pos.x += 1;
-            new_pos.y += 1;
-        }
-        if input.just_pressed(KeyCode::Numpad4) {
-            new_pos.x -= 1;
-        }
-        if input.just_pressed(KeyCode::Numpad5) {
-            ();
-        }
-        if input.just_pressed(KeyCode::Numpad6) {
-            new_pos.x += 1;
-        }
-        if input.just_pressed(KeyCode::Numpad7) {
-            new_pos.x -= 1;
-            new_pos.y -= 1;
-        }
-        if input.just_pressed(KeyCode::Numpad8) {
-            new_pos.y -= 1;
-        }
-        if input.just_pressed(KeyCode::Numpad9) {
-            new_pos.x += 1;
-            new_pos.y -= 1
-        }
+    // TODO:: need to figure out how to do this with a match system and set the RunState at the end if a valid input.
+    if let Some(key) = input.get_just_pressed().next() {
+        if let Ok((player_entity, pos)) = q_player.single_mut(){
+            let mut new_pos = pos.clone();
+            if input.just_pressed(KeyCode::Numpad1) {
+                new_pos.x -= 1;
+                new_pos.y += 1;
+            }
+            if input.just_pressed(KeyCode::Numpad2) {
+                new_pos.y += 1;
+            }
+            if input.just_pressed(KeyCode::Numpad3) {
+                new_pos.x += 1;
+                new_pos.y += 1;
+            }
+            if input.just_pressed(KeyCode::Numpad4) {
+                new_pos.x -= 1;
+            }
+            if input.just_pressed(KeyCode::Numpad5) {
+                ();
+            }
+            if input.just_pressed(KeyCode::Numpad6) {
+                new_pos.x += 1;
+            }
+            if input.just_pressed(KeyCode::Numpad7) {
+                new_pos.x -= 1;
+                new_pos.y -= 1;
+            }
+            if input.just_pressed(KeyCode::Numpad8) {
+                new_pos.y -= 1;
+            }
+            if input.just_pressed(KeyCode::Numpad9) {
+                new_pos.x += 1;
+                new_pos.y -= 1
+            }
 
-        if new_pos != *pos {
-            wants_move.write(WantsToMove{entity: player_entity, destination: new_pos});
-            next_state.set(RunState::Ticking);
+            if new_pos != *pos {
+                wants_move.write(WantsToMove{entity: player_entity, destination: new_pos});
+                next_state.set(RunState::Ticking);
+            }
         }
-    }
-    if input.just_pressed(KeyCode::Escape) {
-        exit.write(AppExit::Success);
-    }
-    if input.just_pressed(KeyCode::KeyF) {
-        if win.mode == WindowMode::BorderlessFullscreen(MonitorSelection::Current) {
-            win.mode = WindowMode::Windowed;
-        } else {
-            win.mode = WindowMode::BorderlessFullscreen(MonitorSelection::Current);
+        if input.just_pressed(KeyCode::Escape) {
+            exit.write(AppExit::Success);
+        }
+        if input.just_pressed(KeyCode::KeyF) {
+            if win.mode == WindowMode::BorderlessFullscreen(MonitorSelection::Current) {
+                win.mode = WindowMode::Windowed;
+            } else {
+                win.mode = WindowMode::BorderlessFullscreen(MonitorSelection::Current);
+            }
+        }
+        if input.just_pressed(KeyCode::KeyS) {
+            let pos = Position {x: 80, y: 50};
+            spawn.write(SpawnNpc{position: pos, def_key: NPC::Villager});
         }
     }
 }

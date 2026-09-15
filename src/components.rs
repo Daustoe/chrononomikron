@@ -3,7 +3,7 @@ use serde::Deserialize;
 use std::cmp;
 use rltk::Point;
 
-#[derive(Component, Debug, Clone, Eq, Default)]
+#[derive(Component, Debug, Clone, Eq, Default, Copy)]
 pub struct Position {
     pub x: i32,
     pub y: i32

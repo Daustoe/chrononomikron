@@ -5,7 +5,7 @@ pub use tiletype::{TileType, tile_walkable, tile_cost, tile_opaque};
 use rltk::{BaseMap, Algorithm2D, Point};
 mod themes;
 pub use themes::*;
-use crate::RunState;
+use crate::{RunState, Position, rng::range};
 
 #[derive(Resource, Default, Clone)]
 pub struct Map {
@@ -27,6 +27,10 @@ pub struct Map {
 impl Map {
     pub fn xy_idx(&self, x: i32, y: i32) -> usize {
         (y as usize * self.width as usize) + x as usize
+    }
+
+    pub fn get_random_pos(&self) -> Position {
+        Position {x: range(0, self.width), y: range(0, self.height)}
     }
 
     pub fn idx_xy(&self, idx: usize) -> (i32, i32) {
