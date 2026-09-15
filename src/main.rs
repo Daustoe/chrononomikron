@@ -18,6 +18,8 @@ use systems::render_system::render;
 mod asset_loader;
 use asset_loader::*;
 use systems::ai::default_move_system::{MoveMode, Movement, default_move_ai_system};
+pub mod player;
+pub use player::*;
 
 use crate::systems::visibility_system::visibility_system;
 #[macro_use]
@@ -54,26 +56,12 @@ fn main() {
 fn setup(mut commands: Commands, mut global_rng: GlobalRngEntity<WyRand>) {
     commands.spawn(Terminal::new([160, 100])
             .with_border(BoxStyle::SINGLE_LINE)
-            //.with_title(" [<fg=4d65b4>Chrononomikron</fg>]"),
     );
     commands.spawn(TerminalCamera::new());
     let mut builder = test_builder(0, 160, 100);
     builder.build_map();
     let start_pos = builder.build_data.starting_position.unwrap();
-    commands.spawn((
-        start_pos,
-        Renderable {
-            glyph: '@',
-            fg: color::css::YELLOW,
-            bg: color::css::BLACK
-        },
-        Player {},
-        Viewshed {
-            visible_tiles: Vec::new(),
-            range: 8,
-            dirty: true
-        },
-    ));
+    commands.spawn(PlayerBundle::new(start_pos));
     commands.insert_resource(builder.build_data.map);
 }
 

@@ -3,7 +3,7 @@ use serde::Deserialize;
 use std::cmp;
 use rltk::Point;
 
-#[derive(Component, Debug, Clone, Eq)]
+#[derive(Component, Debug, Clone, Eq, Default)]
 pub struct Position {
     pub x: i32,
     pub y: i32
@@ -42,14 +42,43 @@ pub struct Renderable {
     pub bg: LinearRgba
 }
 
-#[derive(Component, Clone)]
-pub struct Player {}
+#[derive(Component, Debug)]
+pub struct Actor {}
 
-#[derive(Component, Clone)]
+#[derive(Component, Clone, Debug)]
 pub struct Viewshed {
     pub visible_tiles: Vec::<Position>, 
     pub range: i32,
     pub dirty: bool
+}
+
+impl Default for Viewshed {
+    fn default() -> Self {
+        Self {
+            visible_tiles: Vec::new(),
+            range: 8,
+            dirty: true
+        }
+    }
+}
+
+#[derive(Bundle, Debug)]
+pub struct ActingEntityBundle {
+    pub renderable: Renderable,
+    pub position: Position,
+    pub viewshed: Viewshed, 
+    pub actor: Actor
+}
+
+impl ActingEntityBundle {
+    pub fn new(fg: LinearRgba, glyph: char) -> Self {
+        Self {
+            renderable: Renderable { glyph, fg, bg: LinearRgba::BLACK },
+            position: Position::default(),
+            viewshed: Viewshed::default(),
+            actor: Actor{}
+        }
+    }
 }
 
 // Example of deserializer for LinearRgba
