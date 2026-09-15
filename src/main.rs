@@ -23,40 +23,19 @@ use crate::systems::visibility_system::visibility_system;
 #[macro_use]
 extern crate lazy_static;
 
-#[derive(States, Debug, Hash, Eq, PartialEq, Copy, Clone)]
+#[derive(States, Debug, Hash, Eq, PartialEq, Copy, Clone, Default)]
 pub enum RunState {
+    #[default]
     AwaitingInput,
-    PreRun,
     Ticking,
-    ShowInventory,
-    ShowDropItem,
-    ShowTargeting { range : i32, item : Entity},
-    MainMenu,
-    SaveGame,
-    NextLevel,
-    PreviousLevel,
-    TownPortal,
-    ShowRemoveItem,
-    GameOver,
-    MagicMapReveal { row : i32 },
-    MapGeneration,
-    ShowCheatMenu,
-    //ShowVendor { vendor: Entity, mode : VendorMode },
-    TeleportingToOtherLevel { x: i32, y: i32, depth: i32 },
-    ShowRemoveCurse,
-    ShowIdentify
-}
-
-#[derive(Resource)]
-pub struct GameState {
-    state: RunState
+    Animating,
 }
 
 fn main() {
     App::new()
         .add_plugins((DefaultPlugins, TerminalPlugins, EntropyPlugin::<WyRand>::default()))
         .insert_resource(ClearColor(Color::BLACK))
-        .insert_state(RunState::MainMenu)
+        .insert_state(RunState::AwaitingInput)
         .add_message::<WantsToMove>()
         .add_systems(Startup,
             (
@@ -64,11 +43,11 @@ fn main() {
                 setup,
                 spawn_villager,
             ).chain(),)
-        .add_systems(Update, handle_input)
-        .add_systems(Update, movement_system)
+        .add_systems(Update, handle_input.run_if(in_state(RunState::AwaitingInput)))
+        .add_systems(Update, movement_system.run_if(in_state(RunState::Ticking)))
         .add_systems(Update, render)
         .add_systems(Update, visibility_system)
-        .add_systems(Update, default_move_ai_system)
+        .add_systems(Update, default_move_ai_system.run_if(in_state(RunState::Ticking)))
         .run();
 }
 

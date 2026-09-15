@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy::window::WindowMode;
-use crate::{Position, Player};
+use crate::{Position, Player, RunState};
 use super::WantsToMove;
 
 pub fn handle_input(
@@ -8,7 +8,8 @@ pub fn handle_input(
     input: Res<ButtonInput<KeyCode>>,
     mut win: Single<&mut Window>,
     mut exit: MessageWriter<AppExit>,
-    mut wants_move: MessageWriter<WantsToMove>
+    mut wants_move: MessageWriter<WantsToMove>,
+    mut next_state: ResMut<NextState<RunState>>
 ) {
     if let Ok((player_entity, pos)) = q_player.single_mut(){
         let mut new_pos = pos.clone();
@@ -46,6 +47,7 @@ pub fn handle_input(
 
         if new_pos != *pos {
             wants_move.write(WantsToMove{entity: player_entity, destination: new_pos});
+            next_state.set(RunState::Ticking);
         }
     }
     if input.just_pressed(KeyCode::Escape) {
