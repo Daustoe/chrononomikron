@@ -2,6 +2,12 @@ use bevy::prelude::*;
 use crate::{Position, Map, Player};
 use rltk::{Point, field_of_view};
 
+/// Component that tells the App this entity can view the world around it.
+/// 
+/// # Attributes
+/// - `visible_tiles`   (Vec::<Position>)
+/// - `range`           (i32)
+/// - `dirty`           (bool)
 #[derive(Component, Clone, Debug)]
 pub struct Viewshed {
     pub visible_tiles: Vec::<Position>, 
@@ -9,6 +15,12 @@ pub struct Viewshed {
     pub dirty: bool
 }
 
+/// This ECS system determines which entities and tiles are visible to each entity that has
+/// the Viewshed component attached to it.
+/// 
+/// Special considerations taken for the player entity, as any tiles visible to the player
+/// should be added to the revealed tiles list contained by the map. This ties into the
+/// render system that checks revealed tiles for what it should and shouldn't display.
 pub fn visibility_system(
     mut map: ResMut<Map>,
     //vis_blockers: Query<(Entity, BlocksVisibility)>,
