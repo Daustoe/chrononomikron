@@ -4,7 +4,7 @@ use crate::{Position, Player, RunState, SpawnNpc, NPC};
 use super::WantsToMove;
 
 pub fn handle_input(
-    mut q_player: Query<(Entity, &mut Position), With<Player>>,
+    mut q_player: Query<(Entity, &Position), With<Player>>,
     input: Res<ButtonInput<KeyCode>>,
     mut win: Single<&mut Window>,
     mut exit: MessageWriter<AppExit>,
@@ -14,58 +14,50 @@ pub fn handle_input(
 ) {
     // TODO:: need to figure out how to do this with a match system and set the RunState at the end if a valid input.
     if let Some(key) = input.get_just_pressed().next() {
-        if let Ok((player_entity, pos)) = q_player.single_mut(){
-            let mut new_pos = pos.clone();
-            if input.just_pressed(KeyCode::Numpad1) {
+        let (player_entity, pos) = q_player.single_mut().unwrap();
+        let mut new_pos = Position {x: pos.x, y: pos.y};
+        match key {
+            KeyCode::Numpad1 => { 
                 new_pos.x -= 1;
                 new_pos.y += 1;
-            }
-            if input.just_pressed(KeyCode::Numpad2) {
+            },
+            KeyCode::Numpad2 => {
                 new_pos.y += 1;
-            }
-            if input.just_pressed(KeyCode::Numpad3) {
+            },
+            KeyCode::Numpad3 => {
                 new_pos.x += 1;
                 new_pos.y += 1;
-            }
-            if input.just_pressed(KeyCode::Numpad4) {
+            },
+            KeyCode::Numpad4 => {
                 new_pos.x -= 1;
-            }
-            if input.just_pressed(KeyCode::Numpad5) {
-                ();
-            }
-            if input.just_pressed(KeyCode::Numpad6) {
+            },
+            KeyCode::Numpad6 => {
                 new_pos.x += 1;
-            }
-            if input.just_pressed(KeyCode::Numpad7) {
+            },
+            KeyCode::Numpad7 => {
                 new_pos.x -= 1;
                 new_pos.y -= 1;
-            }
-            if input.just_pressed(KeyCode::Numpad8) {
+            },
+            KeyCode::Numpad8 => {
                 new_pos.y -= 1;
-            }
-            if input.just_pressed(KeyCode::Numpad9) {
+            },
+            KeyCode::Numpad9 => {
                 new_pos.x += 1;
-                new_pos.y -= 1
-            }
-
-            if new_pos != *pos {
-                wants_move.write(WantsToMove{entity: player_entity, destination: new_pos});
-                next_state.set(RunState::Ticking);
-            }
+                new_pos.y -= 1;
+            },
+            KeyCode::Escape => {
+                exit.write(AppExit::Success);
+            },
+            KeyCode::KeyS => {
+                let s_pos = Position {x: 80, y: 50};
+                spawn.write(SpawnNpc{position: s_pos, def_key: NPC::Villager});
+            },
+            _ => ()
         }
-        if input.just_pressed(KeyCode::Escape) {
-            exit.write(AppExit::Success);
-        }
-        if input.just_pressed(KeyCode::KeyF) {
-            if win.mode == WindowMode::BorderlessFullscreen(MonitorSelection::Current) {
-                win.mode = WindowMode::Windowed;
-            } else {
-                win.mode = WindowMode::BorderlessFullscreen(MonitorSelection::Current);
-            }
-        }
-        if input.just_pressed(KeyCode::KeyS) {
-            let pos = Position {x: 80, y: 50};
-            spawn.write(SpawnNpc{position: pos, def_key: NPC::Villager});
+        if new_pos != *pos {
+            wants_move.write(WantsToMove{entity: player_entity, destination: new_pos});
+            next_state.set(RunState::Ticking);
         }
     }
+    // If there is no key and we are running this, that means our runstate is awaitinginput already
 }

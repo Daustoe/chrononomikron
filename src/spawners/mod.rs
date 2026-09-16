@@ -19,7 +19,6 @@ pub fn spawn_system (
     mut queue: ResMut<TimeManager>
 ) {
     for msg in npc_spawns.read() {
-        println!("Spawn trigger!");
         let Some(key) = definitions.npcs.get(&msg.def_key)
         else {
             return;

@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use serde::Deserialize;
-use crate::{Map, Position, WantsToMove, tile_walkable};
+use crate::{Map, Position, WantsToMove, tile_walkable, MyTurn, RunState};
 
 #[derive(Debug, Deserialize, Clone)]
 pub enum Movement {
@@ -14,11 +14,12 @@ pub struct MoveMode {
 }
 
 pub fn default_move_ai_system (
+    mut commands: Commands,
     mut map: ResMut<Map>,
-    mut q_entities: Query<(Entity, &mut MoveMode, &mut Position)>,
-    mut wants_move: MessageWriter<WantsToMove>
+    mut q_entities: Query<(Entity, &mut MoveMode, &Position), With<MyTurn>>,
+    mut wants_move: MessageWriter<WantsToMove>,
 ) {
-    for (entity, mut mode, mut pos) in q_entities.iter_mut() {
+    for (entity, mut mode, pos) in q_entities.iter_mut() {
         match &mut mode.mode {
             Movement::Static => {},
             Movement::Random => {
@@ -48,6 +49,7 @@ pub fn default_move_ai_system (
                             let (x, y) = map.idx_xy(path[1]);
                             wants_move.write(WantsToMove { entity, destination: Position { x, y}});
                             path.remove(0);
+                            commands.entity(entity).remove::<MyTurn>();
                         }
                     } else {
                         mode.mode = Movement::RandomWaypoint { path: None };

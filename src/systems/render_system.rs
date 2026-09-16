@@ -1,12 +1,13 @@
 use bevy::prelude::*;
 use bevy_ascii_terminal::*;
-use crate::{Renderable, Position, Player, Map, tile_glyph};
+use crate::{Renderable, Position, Player, Map, tile_glyph, RunState};
 
 pub fn render(
     mut q_term: Query<&mut Terminal>,
     _q_player: Query<Entity, With<Player>>,
     map: Res<Map>,
-    q_entities: Query<(&Renderable, &Position)>
+    q_entities: Query<(&Renderable, &Position)>,
+    state: Res<State<RunState>>
 ) {
     let mut term = match q_term.single_mut() {
         Ok(term) => term,

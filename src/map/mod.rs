@@ -98,7 +98,7 @@ impl Map {
                 return rs;
             }
         }
-        RunState::AwaitingInput
+        RunState::PlayerTurn
     }
 
     pub fn remove_entity(&mut self, entity: Entity, idx: usize) {

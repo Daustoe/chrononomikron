@@ -21,7 +21,7 @@ use spawners::player::*;
 use spawners::{spawn_system, SpawnNpc};
 use systems::TimeManager;
 use systems::ai::default_move_system::{MoveMode, Movement, default_move_ai_system};
-use systems::time_plugin;
+use systems::*;
 
 use crate::systems::visibility_system::visibility_system;
 #[macro_use]
@@ -30,35 +30,47 @@ extern crate lazy_static;
 #[derive(States, Debug, Hash, Eq, PartialEq, Copy, Clone, Default)]
 pub enum RunState {
     #[default]
-    AwaitingInput,
+    Setup,
+    PlayerTurn,
+    NextTurn,
     Ticking,
     Animating,
 }
 
 fn main() {
     App::new()
-        .add_plugins((DefaultPlugins, TerminalPlugins, EntropyPlugin::<WyRand>::default(), time_plugin))
+        .add_plugins((DefaultPlugins, TerminalPlugins, EntropyPlugin::<WyRand>::default()))
         .insert_resource(ClearColor(Color::BLACK))
         //.init_resource::<TimeManager>()
-        .insert_state(RunState::AwaitingInput)
+        .insert_state(RunState::default())
+        .init_resource::<TimeManager>()
         .add_message::<WantsToMove>()
         .add_message::<SpawnNpc>()
         .add_systems(Startup,
             (
                 load_npc_definitions,
-                setup,
-                spawn_villager,
+                setup
             ).chain(),)
-        .add_systems(Update, handle_input.run_if(in_state(RunState::AwaitingInput)))
-        .add_systems(Update, movement_system.run_if(in_state(RunState::Ticking)))
+        .add_systems(
+            Update,
+            (
+                time_system.run_if(in_state(RunState::Ticking)),
+                visibility_system,
+                handle_input.run_if(in_state(RunState::PlayerTurn)),
+                default_move_ai_system.run_if(in_state(RunState::NextTurn)),
+                movement_system,
+                spawn_system
+            ).chain(),
+        )
         .add_systems(Update, render)
-        .add_systems(Update, visibility_system)
-        .add_systems(Update, default_move_ai_system.run_if(in_state(RunState::Ticking)))
-        .add_systems(Update, spawn_system)
         .run();
 }
 
-fn setup(mut commands: Commands, mut global_rng: GlobalRngEntity<WyRand>, mut queue: ResMut<TimeManager>) {
+fn setup(
+    mut commands: Commands, 
+    mut queue: ResMut<TimeManager>,
+    mut state: ResMut<NextState<RunState>>
+) {
     commands.spawn(Terminal::new([160, 100])
             .with_border(BoxStyle::SINGLE_LINE)
     );
@@ -70,8 +82,9 @@ fn setup(mut commands: Commands, mut global_rng: GlobalRngEntity<WyRand>, mut qu
     queue.push(player_entity);
     commands.insert_resource(builder.build_data.map);
     commands.queue(|world: &mut World| {
-        world.write_message(SpawnNpc { position: Position {x: 80, y: 50}, def_key: NPC::Villager });
+        world.write_message(SpawnNpc { position: Position {x: 80, y: 40}, def_key: NPC::Villager });
     });
+    state.set(RunState::PlayerTurn);
 }
 
 fn spawn_villager(

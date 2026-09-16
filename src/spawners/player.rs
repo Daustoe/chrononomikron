@@ -39,7 +39,7 @@ impl PlayerBundle {
         let mut actingbundle = ActingEntityBundle::new(LinearRgba::WHITE, '@');
         actingbundle.position = start_position;
         Self {
-            actor_bundle: ActingEntityBundle::new(LinearRgba::WHITE, '@'),
+            actor_bundle: actingbundle,
             player: Player {}
         }
     }

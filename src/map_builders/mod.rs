@@ -253,7 +253,6 @@ fn random_shape_builder(builder: &mut BuilderChain) {
 }
 
 pub fn test_builder (new_depth: i32, width: i32, height: i32) -> BuilderChain {
-    println!("Testing Builders!");
     let mut builder = BuilderChain::new(new_depth, width, height, "Test Map");
     builder.start_with(DrunkardsWalkBuilder::open_area());
     builder.with(StartingPosition::new(XStart::CENTER, YStart::CENTER));

@@ -12,9 +12,6 @@ pub struct Energy {
     pub energy: i32
 }
 
-#[derive(Component, Debug, Default)]
-pub struct Actor;
-
 #[derive(Resource, Default)]
 struct Clock {
     now: i32,
@@ -56,7 +53,7 @@ fn setup (mut commands: Commands) {
 }
 
 pub fn time_plugin(app: &mut App) {
-    app.add_systems(Startup, setup);
+    //app.add_systems(Startup, setup);
     app.init_resource::<TimeManager>();
     app.init_resource::<Clock>();
     app.add_systems(Update, time_system.run_if(in_state(RunState::Ticking)));
@@ -65,7 +62,7 @@ pub fn time_plugin(app: &mut App) {
 pub fn time_system(
     mut commands: Commands,
     mut queue: ResMut<TimeManager>,
-    query: Query<&Player>,
+    player_query: Query<Entity, With<Player>>,
     mut run_state: ResMut<NextState<RunState>>,
     //mut clock: ResMut<Clock>,
     //mut actors: Query<(Entity, &Actor, Option<&Player>)>
@@ -73,13 +70,10 @@ pub fn time_system(
     let Some(entity) = queue.pop() else {
         return;
     };
-
-
-    if let Ok(_player) = query.get(entity) {
-        run_state.set(RunState::AwaitingInput);
+    if entity == player_query.single().expect("No Player in ECS!"){
+        run_state.set(RunState::PlayerTurn);
+    } else {
+        run_state.set(RunState::NextTurn)
     }
-    commands.entity(entity).insert(MyTurn);
-    
-    queue.push(entity);
-    
+    commands.entity(entity).insert(MyTurn);  
 }

@@ -98,7 +98,7 @@ where F: FnMut(Entity)->Option<RunState>
             return rs;
         }
     }
-    RunState::AwaitingInput
+    RunState::PlayerTurn
 }
 
 pub fn remove_entity(entity: Entity, idx: usize) {
