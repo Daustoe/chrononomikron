@@ -2,16 +2,19 @@ use bevy::prelude::*;
 use std::collections::VecDeque;
 use crate::{Player, RunState};
 
+#[allow(dead_code)]
 #[derive(Component)]
 pub struct Speed {
     pub speed: i32
 }
 
+#[allow(dead_code)]
 #[derive(Component)]
 pub struct Energy {
     pub energy: i32
 }
 
+#[allow(dead_code)]
 #[derive(Resource, Default)]
 struct Clock {
     now: i32,
@@ -45,18 +48,6 @@ impl TimeManager {
     pub fn remove(&mut self, entity: Entity) {
         self.queue.retain(|e| *e != entity);
     }
-}
-
-fn setup (mut commands: Commands) {
-    let manager = TimeManager::new();
-    commands.insert_resource(manager);
-}
-
-pub fn time_plugin(app: &mut App) {
-    //app.add_systems(Startup, setup);
-    app.init_resource::<TimeManager>();
-    app.init_resource::<Clock>();
-    app.add_systems(Update, time_system.run_if(in_state(RunState::Ticking)));
 }
 
 pub fn time_system(

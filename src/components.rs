@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use serde::Deserialize;
 use std::cmp;
 use rltk::Point;
+use crate::Viewshed;
 
 #[derive(Component, Debug, Clone, Eq, Default, Copy)]
 pub struct Position {
@@ -44,13 +45,6 @@ pub struct Renderable {
 
 #[derive(Component, Debug)]
 pub struct Actor {}
-
-#[derive(Component, Clone, Debug)]
-pub struct Viewshed {
-    pub visible_tiles: Vec::<Position>, 
-    pub range: i32,
-    pub dirty: bool
-}
 
 impl Default for Viewshed {
     fn default() -> Self {

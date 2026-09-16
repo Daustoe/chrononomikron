@@ -3,6 +3,7 @@ use crate::{Position, TimeManager};
 pub mod asset_loader;
 mod mob_defines;
 pub mod player;
+pub use player::*;
 pub use asset_loader::*;
 pub use mob_defines::MonsterBundle;
 

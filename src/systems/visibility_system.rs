@@ -1,11 +1,18 @@
 use bevy::prelude::*;
-use crate::{Viewshed, Position, Map, Player};
+use crate::{Position, Map, Player};
 use rltk::{Point, field_of_view};
+
+#[derive(Component, Clone, Debug)]
+pub struct Viewshed {
+    pub visible_tiles: Vec::<Position>, 
+    pub range: i32,
+    pub dirty: bool
+}
 
 pub fn visibility_system(
     mut map: ResMut<Map>,
     //vis_blockers: Query<(Entity, BlocksVisibility)>,
-    mut q_player: Query<Entity, With<Player>>,
+    q_player: Query<Entity, With<Player>>,
     mut entities_viewing: Query<(Entity, &mut Viewshed, &mut Position)>
 ) {
     for (ent, mut view, pos) in entities_viewing.iter_mut() {

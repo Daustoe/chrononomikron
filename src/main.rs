@@ -12,16 +12,9 @@ pub mod constants;
 pub mod rect;
 pub mod rng;
 mod systems;
-use systems::input_system::*;
-use systems::movement_system::*;
-use systems::render_system::render;
-mod spawners;
-use spawners::asset_loader::*;
-use spawners::player::*;
-use spawners::{spawn_system, SpawnNpc};
-use systems::TimeManager;
-use systems::ai::default_move_system::{MoveMode, Movement, default_move_ai_system};
 use systems::*;
+mod spawners;
+pub use spawners::*;
 
 use crate::systems::visibility_system::visibility_system;
 #[macro_use]
@@ -85,18 +78,4 @@ fn setup(
         world.write_message(SpawnNpc { position: Position {x: 80, y: 40}, def_key: NPC::Villager });
     });
     state.set(RunState::PlayerTurn);
-}
-
-fn spawn_villager(
-    mut commands: Commands,
-    definitions: Res<NpcDefinitions>
-) {
-    let Some(_villager) = definitions.npcs.get(&NPC::Villager)
-    else {
-        return;
-    };
-
-    commands.queue(|world: &mut World| {
-        world.write_message(SpawnNpc { position: Position {x: 80, y: 50}, def_key: NPC::Villager });
-    });
 }

@@ -141,6 +141,7 @@ fn get_tile_glyph_default(idx: usize, map : &Map) -> (char, LinearRgba, LinearRg
     (glyph, fg, bg)
 }
 
+#[allow(unused_variables)]
 fn wall_glyph(map : &Map, x: i32, y:i32) -> char {
 
     // if x < 1 || x >= map.width-2 || y < 1 || y >= map.height-2 as i32 { return '#'; }
@@ -173,6 +174,7 @@ fn wall_glyph(map : &Map, x: i32, y:i32) -> char {
     return '#'
 }
 
+#[allow(dead_code)]
 fn is_revealed_and_wall(map: &Map, x: i32, y: i32) -> bool {
     let idx = map.xy_idx(x, y);
     map.tiles[idx] == TileType::Wall && map.revealed_tiles[idx]

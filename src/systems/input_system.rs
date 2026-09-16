@@ -1,12 +1,10 @@
 use bevy::prelude::*;
-use bevy::window::WindowMode;
 use crate::{Position, Player, RunState, SpawnNpc, NPC};
 use super::WantsToMove;
 
 pub fn handle_input(
     mut q_player: Query<(Entity, &Position), With<Player>>,
     input: Res<ButtonInput<KeyCode>>,
-    mut win: Single<&mut Window>,
     mut exit: MessageWriter<AppExit>,
     mut wants_move: MessageWriter<WantsToMove>,
     mut next_state: ResMut<NextState<RunState>>,

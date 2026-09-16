@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use serde::Deserialize;
-use crate::{Map, Position, WantsToMove, tile_walkable, MyTurn, RunState};
+use crate::{Map, Position, WantsToMove, tile_walkable, MyTurn};
 
 #[derive(Debug, Deserialize, Clone)]
 pub enum Movement {
