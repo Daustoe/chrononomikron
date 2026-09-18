@@ -2,6 +2,17 @@ use super::{Map, TileType};
 use bevy::color::LinearRgba;
 use bevy_ascii_terminal::color::css::*;
 
+/// This function determines what Themed tilesets to use for TileTypes
+/// 
+/// #Arguments
+/// -`idx`: x*y index of the map
+/// -`map`: reference to the `Map` resource.
+/// 
+/// #Returns
+/// Tuple of:
+/// -`char`: character glyph to be used to render
+/// -`LinearRgba`: foreground RGB color
+/// -`LinearRgba`: background RGB color
 pub fn tile_glyph(idx: usize, map : &Map) -> (char, LinearRgba, LinearRgba) {
     let (glyph, mut fg, mut bg) = match map.depth {
         7 => {
@@ -38,6 +49,13 @@ pub fn tile_glyph(idx: usize, map : &Map) -> (char, LinearRgba, LinearRgba) {
     (glyph, fg, bg)
 }
 
+/// This function converts a LinearRgba color to grayscale.
+/// 
+/// #Arguments
+/// `color`: LinearRgba to convert
+/// 
+/// #Returns
+/// `LinearRgba`: color with greyscale transformation applied
 fn grayscale(color: LinearRgba) -> LinearRgba {
     let luminance =
         0.2126 * color.red

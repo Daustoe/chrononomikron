@@ -4,6 +4,7 @@ use std::cmp;
 use rltk::Point;
 use crate::Viewshed;
 
+/// This component assigns a position in the game world to it's attached Entity.
 #[derive(Component, Debug, Clone, Eq, Default, Copy)]
 pub struct Position {
     pub x: i32,
@@ -34,6 +35,7 @@ impl From<Point> for Position {
     }
 }
 
+/// This compoenent informs us that the Entity can be rendered and displayed.
 #[derive(Component, Clone, Deserialize, Debug, Copy)]
 pub struct Renderable {
     pub glyph: char,
@@ -43,6 +45,7 @@ pub struct Renderable {
     pub bg: LinearRgba
 }
 
+/// This component informs us that the Entity can take Actions and should be on the Turn Scheduler.
 #[derive(Component, Debug)]
 pub struct Actor {}
 
@@ -56,6 +59,7 @@ impl Default for Viewshed {
     }
 }
 
+/// This is a bundle of components that are commonly needed for any Entity that can take actions.
 #[derive(Bundle, Debug)]
 pub struct ActingEntityBundle {
     pub renderable: Renderable,

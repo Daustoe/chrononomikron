@@ -2,17 +2,28 @@ use bevy::prelude::*;
 use serde::Deserialize;
 use crate::{Map, Position, WantsToMove, tile_walkable, MyTurn};
 
+/// This Enum defines the types of Movements an Entity can have in MoveMode.
+/// 
+/// - Static: Does not move.
+/// - Random: Picks a random direction to move each turn.
+/// - RandomWaypoint: Picks a random valid location and moves towards it each turn.
 #[derive(Debug, Deserialize, Clone)]
 pub enum Movement {
     Static,
     Random,
     RandomWaypoint{ path: Option<Vec<usize>> }
 }
+
+/// This component informs us that the Entity uses the default movement system.
 #[derive(Component, Debug)]
 pub struct MoveMode {
     pub mode: Movement
 }
 
+/// This system is defines what movement AI is default for an Actor.
+/// 
+/// The default MoveMode is set by the NpcDefinition asset in the RON file. 
+/// It gives the Actor something to do if they have no other action to do in their AI systems.
 pub fn default_move_ai_system (
     mut commands: Commands,
     mut map: ResMut<Map>,

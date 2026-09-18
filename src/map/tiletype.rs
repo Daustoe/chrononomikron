@@ -1,4 +1,6 @@
-
+/// This enum defines the different Tile Types we can encounter on our `Map`.
+/// 
+/// Each type might have different attributes, i.e. a `Wall` is impassable while `Grass` can be walked on.
 #[derive(PartialEq, Eq, Hash, Copy, Clone, Debug)]
 pub enum TileType {
     Wall,
@@ -16,6 +18,7 @@ pub enum TileType {
     UpStairs
 }
 
+/// Determines which TileTypes can be walked on.
 pub fn tile_walkable(tt: TileType) -> bool {
     match tt {
         TileType::Floor | TileType::DownStairs | TileType::Road | TileType::Grass | TileType::ShallowWater |
@@ -25,6 +28,7 @@ pub fn tile_walkable(tt: TileType) -> bool {
     }
 }
 
+/// Determines which TileTypes an Entity with a Viewshed can see through.
 pub fn tile_opaque(tt: TileType) -> bool {
     match tt {
         TileType::Wall  | TileType::Stalactite | TileType::Stalagmite => true,
@@ -32,6 +36,7 @@ pub fn tile_opaque(tt: TileType) -> bool {
     }
 }
 
+/// Determines walking movement cost muliplier on TileTypes.
 pub fn tile_cost(tt: TileType) -> f32 {
     match tt {
         TileType::Road => 0.8,

@@ -2,6 +2,11 @@ use bevy::prelude::*;
 use crate::{Position, Player, RunState, SpawnNpc, NPC};
 use super::WantsToMove;
 
+/// This system handles input from the player.
+/// 
+/// There are many avenues that a player choice could take, so this may need to be expanded
+/// upon greatly in the future. For now, it will handle player movement and closing out
+/// the game window. 
 pub fn handle_input(
     mut q_player: Query<(Entity, &Position), With<Player>>,
     input: Res<ButtonInput<KeyCode>>,
@@ -10,7 +15,6 @@ pub fn handle_input(
     mut next_state: ResMut<NextState<RunState>>,
     mut spawn: MessageWriter<SpawnNpc>
 ) {
-    // TODO:: need to figure out how to do this with a match system and set the RunState at the end if a valid input.
     if let Some(key) = input.get_just_pressed().next() {
         let (player_entity, pos) = q_player.single_mut().unwrap();
         let mut new_pos = Position {x: pos.x, y: pos.y};
@@ -57,5 +61,4 @@ pub fn handle_input(
             next_state.set(RunState::Ticking);
         }
     }
-    // If there is no key and we are running this, that means our runstate is awaitinginput already
 }

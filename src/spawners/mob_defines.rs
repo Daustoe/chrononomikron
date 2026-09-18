@@ -1,6 +1,10 @@
 use bevy::prelude::*;
 use crate::{ActingEntityBundle, Position, MoveMode, NpcDefinition, Actor, Viewshed};
 
+/// Represents the collection of Components needed for a Monster.
+/// 
+/// - `actor_bundle`: `ActingEntityBundle` needed for any Entity that takes Actions.
+/// - `movement`: default movement AI
 #[derive(Bundle, Debug)]
 pub struct MonsterBundle {
     pub actor_bundle: ActingEntityBundle,
@@ -8,6 +12,11 @@ pub struct MonsterBundle {
 }
 
 impl MonsterBundle {
+    /// Creates a new Entity with the attached Components needed
+    /// 
+    /// # Arguments
+    /// - `actor_bundle` : Bundle loaded in from the NpcDefinition RON files
+    /// - `movement` : Default MoveMode to be used.
     pub fn new (position: Position, npc: NpcDefinition ) -> Self {
         Self {
             actor_bundle: ActingEntityBundle {

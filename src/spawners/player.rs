@@ -10,15 +10,18 @@ impl Plugin for PlayerPlugin {
     }
 }
 
+/// Command spawns the default Player Bundle.
 fn spawn_player(
     mut commands: Commands
 ) {
     commands.spawn(PlayerBundle::default());
 }
 
+/// This Component informs us which Entity is the Player entity.
 #[derive(Component, Clone, Debug)]
 pub struct Player {}
 
+/// These Components represent what should be attached by default to a Player Entity.
 #[derive(Bundle, Debug)]
 pub struct PlayerBundle {
     pub actor_bundle: ActingEntityBundle,
