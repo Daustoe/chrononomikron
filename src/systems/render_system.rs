@@ -2,6 +2,12 @@ use bevy::prelude::*;
 use bevy_ascii_terminal::*;
 use crate::{Renderable, Position, Player, Map, tile_glyph};
 
+/// This system is responsible for drawing entities and enviornment to the map
+/// 
+/// It queries for all Entities with the `Renderable` and `Position` components
+/// and draws them to the screen. 
+/// 
+/// It also draws all visible tiles within the `Map` Resource.
 pub fn render(
     mut q_term: Query<&mut Terminal>,
     _q_player: Query<Entity, With<Player>>,

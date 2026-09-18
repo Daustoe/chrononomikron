@@ -20,9 +20,13 @@ struct Clock {
     now: i32,
 }
 
+/// Component that defines who's turn it currently is. 
+/// May want to enforce that this is a singleton? 
 #[derive(Component, Debug)]
 pub struct MyTurn;
 
+/// Resouce that holds onto a list of Entities in their turn
+/// order
 #[derive(Resource, Debug, Default)]
 pub struct TimeManager {
     pub queue: VecDeque<Entity>
