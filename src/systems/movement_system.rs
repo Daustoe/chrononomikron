@@ -1,10 +1,7 @@
-use bevy::ecs::{entity::Entity, system::Query};
+//use bevy::ecs::{entity::Entity, system::Query};
 use bevy::prelude::*;
 
-use crate::components::Position;
-use crate::Map;
-use crate::RunState;
-
+use crate::{Position, Map, RunState, Viewshed};
 // #[derive(Component)]
 // struct EntityMoved {}
 
@@ -31,17 +28,16 @@ pub struct WantsToMove {
 /// Entities.
 pub fn movement_system(
     mut events: MessageReader<WantsToMove>,
-    mut movers: Query<(Entity, &mut Position)>,
-    map: Res<Map>, 
+    mut movers: Query<(Entity, &mut Position, &mut Viewshed)>,
+    mut map: ResMut<Map>, 
     mut run_state: ResMut<NextState<RunState>>
 ) {
     for msg in events.read() {
-        if let Ok((_mov_ent, mut position)) = movers.get_mut(msg.entity) {
+        if let Ok((mov_ent, mut position, mut viewshed)) = movers.get_mut(msg.entity) {
+            let start_idx = map.xy_idx(position.x, position.y);
             let dest_idx = map.xy_idx(msg.destination.x, msg.destination.y);
-            if !map.is_blocked(dest_idx){
-                position.x = msg.destination.x;
-                position.y = msg.destination.y;
-            }
+            map.move_entity(mov_ent, start_idx, dest_idx);
+            viewshed.dirty = true;
             run_state.set(RunState::Ticking);
         }
     }
