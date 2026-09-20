@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_ascii_terminal::*;
-use crate::{Renderable, Position, Player, Map, tile_glyph};
+use crate::{Renderable, Position, Player, Map, tile_glyph, RunState};
 
 /// This system is responsible for drawing entities and enviornment to the map
 /// 
@@ -13,11 +13,13 @@ pub fn render(
     _q_player: Query<Entity, With<Player>>,
     map: Res<Map>,
     q_entities: Query<(&Renderable, &Position)>,
+    //current_state: Res<State<RunState>>
 ) {
     let mut term = match q_term.single_mut() {
         Ok(term) => term,
         Err(_) => return,
     };
+    //println!("Current State: {:?}", current_state);
 
     term.clear();
     term.set_pivot(Pivot::LeftTop);

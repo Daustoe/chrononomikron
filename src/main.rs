@@ -16,7 +16,13 @@ use systems::*;
 mod spawners;
 pub use spawners::*;
 
-use crate::systems::visibility_system::visibility_system;
+use crate::systems::ai::{
+    adjacent_ai_system::*,
+    chase_ai_system::*,
+    approach_ai_system::*,
+    visible_ai_system::*,
+};
+//use crate::systems::{ai::approach_ai_system::approach_ai_system, visibility_system::visibility_system};
 #[macro_use]
 extern crate lazy_static;
 
@@ -50,6 +56,9 @@ fn main() {
                 time_system.run_if(in_state(RunState::Ticking)),
                 visibility_system,
                 handle_input.run_if(in_state(RunState::PlayerTurn)),
+                visible_ai_system.run_if(in_state(RunState::NextTurn)),
+                approach_ai_system.run_if(in_state(RunState::NextTurn)),
+                chasing_ai_system.run_if(in_state(RunState::NextTurn)),
                 default_move_ai_system.run_if(in_state(RunState::NextTurn)),
                 movement_system,
                 spawn_system

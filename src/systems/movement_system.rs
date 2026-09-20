@@ -37,6 +37,8 @@ pub fn movement_system(
             let start_idx = map.xy_idx(position.x, position.y);
             let dest_idx = map.xy_idx(msg.destination.x, msg.destination.y);
             map.move_entity(mov_ent, start_idx, dest_idx);
+            position.x = msg.destination.x;
+            position.y = msg.destination.y;
             viewshed.dirty = true;
             run_state.set(RunState::Ticking);
         }
