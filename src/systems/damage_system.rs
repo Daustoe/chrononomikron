@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{Position, };
+use crate::{Position, Health};
 
 #[derive(Message)]
 pub struct Damage {
@@ -18,9 +18,14 @@ pub enum DamageType {
 
 pub fn apply_damage_system (
     mut messages: MessageReader<Damage>,
-    //mut query: Query<(&mut Health, &Resistances)>,
+    mut query: Query<&mut Health>,
 ) {
     for damage in messages.read() {
-        println!("{:?} wants to attack {:?}", damage.source.unwrap(), damage.target);
+        let Ok(mut health) = query.get_mut(damage.target) else {
+            continue;
+        };
+        health.health = (health.health - damage.amount).max(0);
+        println!("{:?} attacks {:?} for {} damage.", damage.source.unwrap(), damage.target, damage.amount);
+        println!("{:?} has {} health left", damage.target, health.health);
     }
 }
