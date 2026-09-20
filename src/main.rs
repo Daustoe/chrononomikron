@@ -56,6 +56,7 @@ fn main() {
                 time_system.run_if(in_state(RunState::Ticking)),
                 visibility_system,
                 handle_input.run_if(in_state(RunState::PlayerTurn)),
+                adjacent_ai_system.run_if(in_state(RunState::NextTurn)),
                 visible_ai_system.run_if(in_state(RunState::NextTurn)),
                 approach_ai_system.run_if(in_state(RunState::NextTurn)),
                 chasing_ai_system.run_if(in_state(RunState::NextTurn)),

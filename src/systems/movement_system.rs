@@ -41,6 +41,7 @@ pub fn movement_system(
             position.y = msg.destination.y;
             viewshed.dirty = true;
             run_state.set(RunState::Ticking);
+            // TODO: Remove MyTurn marker here?
         }
     }
 }
