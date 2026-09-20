@@ -45,6 +45,7 @@ fn main() {
         .init_resource::<TimeManager>()
         .add_message::<WantsToMove>()
         .add_message::<SpawnNpc>()
+        .add_message::<Damage>()
         .add_systems(Startup,
             (
                 load_npc_definitions,
@@ -62,6 +63,7 @@ fn main() {
                 chasing_ai_system.run_if(in_state(RunState::NextTurn)),
                 default_move_ai_system.run_if(in_state(RunState::NextTurn)),
                 movement_system,
+                apply_damage_system,
                 spawn_system
             ).chain(),
         )

@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{Map, Position, MyTurn, Player, ai::Reaction, RunState};
+use crate::{Map, Position, MyTurn, Player, ai::Reaction, RunState, Damage, DamageType};
 
 pub fn adjacent_ai_system (
     mut commands: Commands, 
@@ -7,6 +7,7 @@ pub fn adjacent_ai_system (
     q_entities: Query<(Entity, &Position), With<MyTurn>>,
     q_player: Query<Entity, With<Player>>,
     mut run_state: ResMut<NextState<RunState>>,
+    mut wants_attack: MessageWriter<Damage>,
 ) {
     let mut turn_done: Vec<Entity> = Vec::new();
     for (entity, pos) in q_entities.iter() {
@@ -29,7 +30,12 @@ pub fn adjacent_ai_system (
             let mut done = false;
             for reaction in reactions.iter() {
                 if let Reaction::Attack = reaction.1 {
-                    println!("{:?} wants to attack!", entity);
+                    wants_attack.write(Damage { 
+                        source: Some(entity), 
+                        target: reaction.0, 
+                        amount: 2, 
+                        damage_type: DamageType::Physical
+                    });
                     done = true;
                 }
             }

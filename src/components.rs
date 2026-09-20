@@ -11,6 +11,16 @@ pub struct Position {
     pub y: i32
 }
 
+#[derive(Component, Debug)]
+pub struct Health {
+    pub health: i32
+}
+
+#[derive(Component, Debug)]
+pub struct Mana {
+    pub mana: i32
+}
+
 impl cmp::PartialEq<Position> for Position {
     fn eq(&self, other: &Self) -> bool {
         self.x == other.x && self.y == other.y

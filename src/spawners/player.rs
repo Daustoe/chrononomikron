@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{ActingEntityBundle, Position};
+use crate::{ActingEntityBundle, Position, Health, Mana};
 
 pub struct PlayerPlugin;
 
@@ -25,14 +25,18 @@ pub struct Player {}
 #[derive(Bundle, Debug)]
 pub struct PlayerBundle {
     pub actor_bundle: ActingEntityBundle,
-    pub player: Player
+    pub player: Player, 
+    pub health: Health,
+    pub mana: Mana,
 }
 
 impl Default for PlayerBundle {
     fn default() -> Self {
         Self {
             actor_bundle: ActingEntityBundle::new(LinearRgba::WHITE, '@'),
-            player: Player {}
+            player: Player {},
+            health: Health { health: 10 },
+            mana: Mana { mana: 0 }
         }
     }
 }
@@ -43,7 +47,9 @@ impl PlayerBundle {
         actingbundle.position = start_position;
         Self {
             actor_bundle: actingbundle,
-            player: Player {}
+            player: Player {},
+            health: Health { health: 10 },
+            mana: Mana { mana: 0 }
         }
     }
 }
