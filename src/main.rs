@@ -37,10 +37,13 @@ pub enum RunState {
     Animating,
 }
 
+pub const VIEWPORT_SIZE: [u32;2] = [80, 50];
+
 fn main() {
     App::new()
         .add_plugins((DefaultPlugins, TerminalPlugins, EntropyPlugin::<WyRand>::default()))
         .insert_resource(ClearColor(Color::BLACK))
+        .insert_resource(TerminalMeshWorldScaling::World)
         //.init_resource::<TimeManager>()
         .insert_state(RunState::default())
         .init_resource::<TimeManager>()
@@ -80,7 +83,6 @@ fn setup(
     commands.spawn((
         Terminal::new([80, 50])
             .with_border(BoxStyle::SINGLE_LINE),
-        TerminalMeshTileScaling(Vec2::new(12.0, 12.0)),
     ));
     commands.spawn(TerminalCamera::new());
     let mut builder = test_builder(0, 160, 100);
