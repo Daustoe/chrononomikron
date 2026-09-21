@@ -76,7 +76,7 @@ fn setup(
     mut queue: ResMut<TimeManager>,
     mut state: ResMut<NextState<RunState>>
 ) {
-    commands.spawn(Terminal::new([160, 100])
+    commands.spawn(Terminal::new([80, 50])
             .with_border(BoxStyle::SINGLE_LINE)
     );
     commands.spawn(TerminalCamera::new());
