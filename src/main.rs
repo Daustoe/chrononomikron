@@ -1,5 +1,7 @@
 use bevy::prelude::*;
 use bevy_ascii_terminal::*;
+use bevy_ascii_terminal::render::TerminalMeshTileScaling;
+use bevy::window::WindowResolution;
 use bevy_rand::prelude::*;
 
 mod components;
@@ -40,7 +42,11 @@ pub const VIEWPORT_SIZE: [u32;2] = [80, 50];
 
 fn main() {
     App::new()
-        .add_plugins((DefaultPlugins, TerminalPlugins, EntropyPlugin::<WyRand>::default()))
+        .add_plugins((
+            DefaultPlugins, 
+            TerminalPlugins, 
+            EntropyPlugin::<WyRand>::default()
+        ))
         .insert_resource(ClearColor(Color::BLACK))
         .insert_resource(TerminalMeshWorldScaling::World)
         //.init_resource::<TimeManager>()
@@ -78,16 +84,25 @@ fn main() {
 fn setup(
     mut commands: Commands, 
     mut queue: ResMut<TimeManager>,
-    mut state: ResMut<NextState<RunState>>
+    mut state: ResMut<NextState<RunState>>,
+    mut q_transform: Query<&mut Transform, With<Terminal>>
 ) {
     commands.spawn((
         Terminal::new([80, 50])
-            .with_border(BoxStyle::SINGLE_LINE),
+            //.with_border(BoxStyle::DOUBLE_LINE),
+            .with_pivot(Pivot::LeftTop),
+        TerminalMeshPivot::LeftTop,
+        //TerminalBorder
+        
     ));
-    commands.spawn(TerminalCamera::new());
+    commands.spawn(TerminalCamera::default());
+    for mut transform in q_transform.iter_mut() {
+        transform.translation = Vec3::new(-24.0, -12.0, 100.0);
+    }
     let mut builder = test_builder(0, 160, 100);
     builder.build_map();
     let start_pos = builder.build_data.starting_position.unwrap();
+    println!("Starting Pos: {:?}", start_pos);
     let player_entity = commands.spawn(PlayerBundle::new(start_pos)).id();
     queue.push(player_entity);
     commands.insert_resource(builder.build_data.map);

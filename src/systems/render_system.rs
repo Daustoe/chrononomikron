@@ -26,15 +26,7 @@ pub fn render(
     
     // get the bounds of the screen based on player position
     let (_player, player_pos) = q_player.single().unwrap();
-    let (x_chars, y_chars) = (80, 50);
-
-    let center_x = x_chars / 2;
-    let center_y = y_chars / 2;
-
-    let min_x = player_pos.x - center_x;
-    let max_x = min_x + x_chars;
-    let min_y = player_pos.y - center_y;
-    let max_y = min_y + y_chars;
+    let (min_x, max_x, min_y, max_y) = get_screen_bounds(player_pos.clone());
 
     for (y, ty) in (min_y .. max_y).enumerate() {
         let y = y as i32;
@@ -71,4 +63,17 @@ pub fn render(
             }
         }
     }
+}
+
+pub fn get_screen_bounds(player_pos: Position) -> (i32, i32, i32, i32){
+    let (x_chars, y_chars) = (80, 50);
+
+    let center_x = x_chars / 2;
+    let center_y = y_chars / 2;
+
+    let min_x = player_pos.x - center_x;
+    let max_x = min_x + x_chars;
+    let min_y = player_pos.y - center_y;
+    let max_y = min_y + y_chars;
+    (min_x, max_x, min_y, max_y)
 }
