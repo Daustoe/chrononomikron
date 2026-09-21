@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{ActingEntityBundle, Position, Health, Mana};
+use crate::{ActingEntityBundle, Position, Health, Mana, BlocksTile};
 
 pub struct PlayerPlugin;
 
@@ -28,6 +28,7 @@ pub struct PlayerBundle {
     pub player: Player, 
     pub health: Health,
     pub mana: Mana,
+    pub blocks: BlocksTile
 }
 
 impl Default for PlayerBundle {
@@ -36,7 +37,8 @@ impl Default for PlayerBundle {
             actor_bundle: ActingEntityBundle::new(LinearRgba::WHITE, '@'),
             player: Player {},
             health: Health { health: 10 },
-            mana: Mana { mana: 0 }
+            mana: Mana { mana: 0 },
+            blocks: BlocksTile {}
         }
     }
 }
@@ -49,7 +51,8 @@ impl PlayerBundle {
             actor_bundle: actingbundle,
             player: Player {},
             health: Health { health: 10 },
-            mana: Mana { mana: 0 }
+            mana: Mana { mana: 0 },
+            blocks: BlocksTile {}
         }
     }
 }

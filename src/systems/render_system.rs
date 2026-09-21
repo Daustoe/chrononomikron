@@ -44,7 +44,7 @@ pub fn render(
                 let idx = map.xy_idx(tx, ty);
                 if map.revealed_tiles[idx] {
                     let tile_data = tile_glyph(idx, &map);
-                    let Some(tile) = term.try_tile_mut(IVec2::from_array([x, y])) else {
+                    let Some(tile) = term.try_tile_mut(IVec2::from_array([x+1, y+1])) else {
                         continue;
                     };
                     tile.glyph = tile_data.0;
@@ -62,7 +62,7 @@ pub fn render(
             let entity_screen_x = pos.x - min_x;
             let entity_screen_y = pos.y - min_y;
             if entity_screen_x > 0 && entity_screen_x < map.width && entity_screen_y > 0 && entity_screen_y < map.height {
-                let Some(tile) = term.try_tile_mut(IVec2::from_array([entity_screen_x, entity_screen_y])) else {
+                let Some(tile) = term.try_tile_mut(IVec2::from_array([entity_screen_x+1, entity_screen_y+1])) else {
                     continue;
                 };
                 tile.glyph = r.glyph;

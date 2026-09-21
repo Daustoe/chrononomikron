@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{Position, TimeManager};
+use crate::{Position, TimeManager, Map};
 pub mod asset_loader;
 mod mob_defines;
 pub mod player;
@@ -17,7 +17,8 @@ pub fn spawn_system (
     mut commands: Commands,
     mut npc_spawns: MessageReader<SpawnNpc>,
     definitions: Res<NpcDefinitions>, 
-    mut queue: ResMut<TimeManager>
+    mut queue: ResMut<TimeManager>,
+    mut map: ResMut<Map>,
 ) {
     for msg in npc_spawns.read() {
         let Some(key) = definitions.npcs.get(&msg.def_key)
@@ -25,6 +26,8 @@ pub fn spawn_system (
             return;
         };
         let entity = commands.spawn(MonsterBundle::new(msg.position, key.clone())).id();
+        let idx = map.xy_idx(msg.position.x, msg.position.y);
+        map.index_entity(entity, idx, true);
         queue.push(entity);
     }
 }

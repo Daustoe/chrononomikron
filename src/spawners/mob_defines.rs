@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{ActingEntityBundle, Position, MoveMode, NpcDefinition, Actor, Viewshed, Health, Mana};
+use crate::{ActingEntityBundle, BlocksTile, Position, MoveMode, NpcDefinition, Actor, Viewshed, Health, Mana};
 
 /// Represents the collection of Components needed for a Monster.
 /// 
@@ -11,6 +11,7 @@ pub struct MonsterBundle {
     pub movement: MoveMode,
     pub health: Health,
     pub mana: Mana,
+    pub blocks: BlocksTile,
 }
 
 impl MonsterBundle {
@@ -29,7 +30,8 @@ impl MonsterBundle {
             },
             movement: MoveMode {mode: npc.movement},
             health: Health { health: npc.health.unwrap() },
-            mana: Mana { mana: npc.mana.unwrap() }
+            mana: Mana { mana: npc.mana.unwrap() },
+            blocks: BlocksTile {}
         }
     }
 }

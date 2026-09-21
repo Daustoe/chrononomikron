@@ -17,6 +17,9 @@ pub struct Health {
 }
 
 #[derive(Component, Debug)]
+pub struct BlocksTile {}
+
+#[derive(Component, Debug)]
 pub struct Mana {
     pub mana: i32
 }

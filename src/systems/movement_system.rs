@@ -36,10 +36,13 @@ pub fn movement_system(
         if let Ok((mov_ent, mut position, mut viewshed)) = movers.get_mut(msg.entity) {
             let start_idx = map.xy_idx(position.x, position.y);
             let dest_idx = map.xy_idx(msg.destination.x, msg.destination.y);
-            map.move_entity(mov_ent, start_idx, dest_idx);
-            position.x = msg.destination.x;
-            position.y = msg.destination.y;
-            viewshed.dirty = true;
+            if !map.is_blocked(dest_idx){
+                map.move_entity(mov_ent, start_idx, dest_idx);
+                position.x = msg.destination.x;
+                position.y = msg.destination.y;
+                
+                viewshed.dirty = true;
+            }
             run_state.set(RunState::Ticking);
             // TODO: Remove MyTurn marker here?
         }
