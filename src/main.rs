@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_ascii_terminal::*;
+use bevy_ascii_terminal::render::TerminalMeshTileScaling;
 use bevy_rand::prelude::*;
 
 mod components;
@@ -76,9 +77,11 @@ fn setup(
     mut queue: ResMut<TimeManager>,
     mut state: ResMut<NextState<RunState>>
 ) {
-    commands.spawn(Terminal::new([80, 50])
-            .with_border(BoxStyle::SINGLE_LINE)
-    );
+    commands.spawn((
+        Terminal::new([80, 50])
+            .with_border(BoxStyle::SINGLE_LINE),
+        TerminalMeshTileScaling(Vec2::new(12.0, 12.0)),
+    ));
     commands.spawn(TerminalCamera::new());
     let mut builder = test_builder(0, 160, 100);
     builder.build_map();
