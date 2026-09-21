@@ -1,6 +1,5 @@
 use bevy::prelude::*;
 use bevy_ascii_terminal::*;
-use bevy_ascii_terminal::render::TerminalMeshTileScaling;
 use bevy_rand::prelude::*;
 
 mod components;
@@ -68,6 +67,7 @@ fn main() {
                 default_move_ai_system.run_if(in_state(RunState::NextTurn)),
                 movement_system,
                 apply_damage_system,
+                death_system,
                 spawn_system
             ).chain(),
         )

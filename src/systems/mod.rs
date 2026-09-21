@@ -5,6 +5,7 @@ pub mod visibility_system;
 pub mod ai;
 pub mod time_system;
 pub mod damage_system;
+pub mod death_system;
 
 pub use time_system::*;
 pub use movement_system::*;
@@ -13,3 +14,4 @@ pub use render_system::*;
 pub use visibility_system::*;
 pub use ai::default_move_system::*;
 pub use damage_system::*;
+pub use death_system::*;
