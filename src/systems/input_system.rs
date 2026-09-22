@@ -90,9 +90,9 @@ pub fn handle_input(
             let mapped_pos_y = (50 - grid_position.y as i32) + min_y;
             println!("Mapped positions: [{},{}]", mapped_pos_x, mapped_pos_y);
             let idx = map.xy_idx(mapped_pos_x, mapped_pos_y);
-            map.for_each_tile_content(idx, |other_entity| {
-                println!("Entity found: {:?}", other_entity);
-            });
+            //map.for_each_tile_content(idx, |other_entity| {
+                //println!("Entity found: {:?}", other_entity);
+            //});
             println!("World Pos: {:?}", grid_position);
 
         }

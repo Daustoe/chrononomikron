@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 use bevy_ascii_terminal::*;
-use bevy_ascii_terminal::render::TerminalMeshTileScaling;
-use bevy::window::WindowResolution;
+use bevy::camera::Viewport;
 use bevy_rand::prelude::*;
 
 mod components;
@@ -38,7 +37,7 @@ pub enum RunState {
     Animating,
 }
 
-pub const VIEWPORT_SIZE: [u32;2] = [80, 50];
+pub const VIEWPORT_SIZE: [u32;2] = [80, 45];
 
 fn main() {
     App::new()
@@ -85,8 +84,30 @@ fn setup(
     mut commands: Commands, 
     mut queue: ResMut<TimeManager>,
     mut state: ResMut<NextState<RunState>>,
-    mut q_transform: Query<&mut Transform, With<Terminal>>
+    mut q_transform: Query<&mut Transform, With<Terminal>>,
+    mut window: Single<&Window>
 ) {
+    let window_size = window.physical_size().as_vec2();
+    println!("Window Size: {}", window_size);
+
+    commands.spawn((
+        Camera2d,
+        Camera {
+            viewport: Some(Viewport {
+                physical_position: UVec2::new(0, 0),
+                physical_size: window_size.as_uvec2(),
+                ..default()
+            }),
+            ..default()
+        },
+        TerminalCamera::default(),
+    ));
+
+    commands.spawn((
+        Terminal::new([80, 45]).with_border(BoxStyle::SINGLE_LINE),
+        TerminalMeshPivot::LeftTop
+    ));
+    /* 
     commands.spawn((
         Terminal::new([80, 50])
             //.with_border(BoxStyle::DOUBLE_LINE),
@@ -99,7 +120,8 @@ fn setup(
     for mut transform in q_transform.iter_mut() {
         transform.translation = Vec3::new(-24.0, -12.0, 100.0);
     }
-    let mut builder = test_builder(0, 160, 100);
+    */
+    let mut builder = test_builder(0, 160, 90);
     builder.build_map();
     let start_pos = builder.build_data.starting_position.unwrap();
     println!("Starting Pos: {:?}", start_pos);
@@ -107,7 +129,7 @@ fn setup(
     queue.push(player_entity);
     commands.insert_resource(builder.build_data.map);
     commands.queue(|world: &mut World| {
-        world.write_message(SpawnNpc { position: Position {x: 80, y: 40}, def_key: NPC::Villager });
+        world.write_message(SpawnNpc { position: Position {x: 80, y: 30}, def_key: NPC::Villager });
     });
     state.set(RunState::PlayerTurn);
 }

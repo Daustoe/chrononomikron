@@ -2,6 +2,8 @@ use bevy::prelude::*;
 use bevy_ascii_terminal::*;
 use crate::{Renderable, Position, Player, Map, tile_glyph, RunState};
 
+const REVEAL_ALL: bool = true;
+
 /// This system is responsible for drawing entities and enviornment to the map
 /// 
 /// It queries for all Entities with the `Renderable` and `Position` components
@@ -34,7 +36,7 @@ pub fn render(
             let x = x as i32;
             if tx > 0 && tx < map.width && ty > 0 && ty < map.height {
                 let idx = map.xy_idx(tx, ty);
-                if map.revealed_tiles[idx] {
+                if map.revealed_tiles[idx] || REVEAL_ALL {
                     let tile_data = tile_glyph(idx, &map);
                     let Some(tile) = term.try_tile_mut(IVec2::from_array([x+1, y+1])) else {
                         continue;
