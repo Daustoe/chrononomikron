@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{Position, Health};
+use crate::Health;
 
 #[derive(Message)]
 pub struct Damage {

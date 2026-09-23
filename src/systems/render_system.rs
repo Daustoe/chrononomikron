@@ -1,8 +1,6 @@
 use bevy::prelude::*;
 use bevy_ascii_terminal::*;
-use crate::{Renderable, Position, Player, Map, tile_glyph, RunState};
-
-const REVEAL_ALL: bool = true;
+use crate::{Renderable, Position, Player, Map, tile_glyph, constants::*};
 
 /// This system is responsible for drawing entities and enviornment to the map
 /// 
@@ -15,7 +13,6 @@ pub fn render(
     q_player: Query<(Entity, &Position), With<Player>>,
     map: Res<Map>,
     q_entities: Query<(&Renderable, &Position)>,
-    //current_state: Res<State<RunState>>
 ) {
     let mut term = match q_term.single_mut() {
         Ok(term) => term,
@@ -34,11 +31,11 @@ pub fn render(
         let y = y as i32;
         for (x, tx) in (min_x .. max_x).enumerate() {
             let x = x as i32;
-            if tx > 0 && tx < map.width && ty > 0 && ty < map.height {
+            if tx >= 0 && tx < map.width && ty >= 0 && ty < map.height {
                 let idx = map.xy_idx(tx, ty);
                 if map.revealed_tiles[idx] || REVEAL_ALL {
                     let tile_data = tile_glyph(idx, &map);
-                    let Some(tile) = term.try_tile_mut(IVec2::from_array([x+1, y+1])) else {
+                    let Some(tile) = term.try_tile_mut(IVec2::from_array([x, y])) else {
                         continue;
                     };
                     tile.glyph = tile_data.0;
@@ -56,7 +53,7 @@ pub fn render(
             let entity_screen_x = pos.x - min_x;
             let entity_screen_y = pos.y - min_y;
             if entity_screen_x > 0 && entity_screen_x < map.width && entity_screen_y > 0 && entity_screen_y < map.height {
-                let Some(tile) = term.try_tile_mut(IVec2::from_array([entity_screen_x+1, entity_screen_y+1])) else {
+                let Some(tile) = term.try_tile_mut(IVec2::from_array([entity_screen_x, entity_screen_y])) else {
                     continue;
                 };
                 tile.glyph = r.glyph;
@@ -68,14 +65,14 @@ pub fn render(
 }
 
 pub fn get_screen_bounds(player_pos: Position) -> (i32, i32, i32, i32){
-    let (x_chars, y_chars) = (80, 50);
+    let (x_chars, y_chars)= TERMINAL_DIMENSIONS.into();
 
-    let center_x = x_chars / 2;
-    let center_y = y_chars / 2;
+    let center_x = x_chars as i32 / 2;
+    let center_y = y_chars as i32 / 2;
 
     let min_x = player_pos.x - center_x;
-    let max_x = min_x + x_chars;
+    let max_x = min_x + x_chars as i32;
     let min_y = player_pos.y - center_y;
-    let max_y = min_y + y_chars;
+    let max_y = min_y + y_chars as i32;
     (min_x, max_x, min_y, max_y)
 }

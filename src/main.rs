@@ -16,6 +16,7 @@ mod systems;
 use systems::*;
 mod spawners;
 pub use spawners::*;
+use constants::*;
 
 use crate::systems::ai::{
     adjacent_ai_system::*,
@@ -37,8 +38,6 @@ pub enum RunState {
     Animating,
 }
 
-pub const VIEWPORT_SIZE: [u32;2] = [80, 45];
-
 fn main() {
     App::new()
         .add_plugins((
@@ -57,7 +56,8 @@ fn main() {
         .add_systems(Startup,
             (
                 load_npc_definitions,
-                setup
+                setup,
+                index_player,
             ).chain(),)
         .add_systems(
             Update,
@@ -82,13 +82,9 @@ fn main() {
 
 fn setup(
     mut commands: Commands, 
-    mut queue: ResMut<TimeManager>,
-    mut state: ResMut<NextState<RunState>>,
-    mut q_transform: Query<&mut Transform, With<Terminal>>,
-    mut window: Single<&Window>
+    window: Single<&Window>,
 ) {
     let window_size = window.physical_size().as_vec2();
-    println!("Window Size: {}", window_size);
 
     commands.spawn((
         Camera2d,
@@ -104,32 +100,33 @@ fn setup(
     ));
 
     commands.spawn((
-        Terminal::new([80, 45]).with_border(BoxStyle::SINGLE_LINE),
+        Terminal::new(TERMINAL_DIMENSIONS),
+            //.with_border(BoxStyle::DOUBLE_LINE),
         TerminalMeshPivot::LeftTop
     ));
-    /* 
-    commands.spawn((
-        Terminal::new([80, 50])
-            //.with_border(BoxStyle::DOUBLE_LINE),
-            .with_pivot(Pivot::LeftTop),
-        TerminalMeshPivot::LeftTop,
-        //TerminalBorder
-        
-    ));
-    commands.spawn(TerminalCamera::default());
-    for mut transform in q_transform.iter_mut() {
-        transform.translation = Vec3::new(-24.0, -12.0, 100.0);
-    }
-    */
+   
     let mut builder = test_builder(0, 160, 90);
     builder.build_map();
     let start_pos = builder.build_data.starting_position.unwrap();
     println!("Starting Pos: {:?}", start_pos);
-    let player_entity = commands.spawn(PlayerBundle::new(start_pos)).id();
-    queue.push(player_entity);
+    commands.spawn(PlayerBundle::new(start_pos));
     commands.insert_resource(builder.build_data.map);
+}
+
+fn index_player(
+    mut map: ResMut<Map>,
+    mut commands: Commands,
+    mut queue: ResMut<TimeManager>,
+    mut q_player: Query<(Entity, &Position), With<Player>>,
+    mut state: ResMut<NextState<RunState>>,
+) {
+    let (player_entity, pos) = q_player.single_mut().unwrap();
+    queue.push(player_entity);
+    
+    map.index_entity(player_entity, *pos, true);
     commands.queue(|world: &mut World| {
         world.write_message(SpawnNpc { position: Position {x: 80, y: 30}, def_key: NPC::Villager });
     });
     state.set(RunState::PlayerTurn);
+
 }

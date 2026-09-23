@@ -1,5 +1,5 @@
 use bevy::prelude::*;
-use crate::{MyTurn, Position, Map, WantsToMove, ai::WantsToApproach, ai::Reaction, Viewshed, Player};
+use crate::{MyTurn, Position, Map, ai::WantsToApproach, ai::Reaction, Viewshed, Player};
 
 pub fn visible_ai_system (
     mut commands: Commands,

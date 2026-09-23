@@ -26,8 +26,7 @@ pub fn spawn_system (
             return;
         };
         let entity = commands.spawn(MonsterBundle::new(msg.position, key.clone())).id();
-        let idx = map.xy_idx(msg.position.x, msg.position.y);
-        map.index_entity(entity, idx, true);
+        map.index_entity(entity, msg.position, true);
         queue.push(entity);
     }
 }

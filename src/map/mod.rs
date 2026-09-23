@@ -49,7 +49,8 @@ impl Map {
         !self.is_blocked(idx)
     }
 
-    pub fn index_entity(&mut self, entity: Entity, idx: usize, blocks_tile: bool) {
+    pub fn index_entity(&mut self, entity: Entity, pos: Position, blocks_tile: bool) {
+        let idx = self.xy_idx(pos.x, pos.y);
         self.tile_content[idx].push((entity, blocks_tile));
         if blocks_tile {
             self.blocked[idx].1 = true;

@@ -16,7 +16,7 @@ pub fn chasing_ai_system (
 ) {
     let mut targets: HashMap<Entity, Position> = HashMap::new();
     let mut end_chase: Vec<Entity> = Vec::new();
-    for (entity, pos, chasing) in q_entities.iter() {
+    for (entity, _pos, chasing) in q_entities.iter() {
         let target_pos = q_positions.get_inner(chasing.target);
         if let Ok(target_pos) = target_pos {
             targets.insert(entity, *target_pos.1);
