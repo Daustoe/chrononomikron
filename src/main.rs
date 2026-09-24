@@ -28,6 +28,12 @@ use crate::systems::ai::{
 #[macro_use]
 extern crate lazy_static;
 
+#[derive(Component)]
+struct MapTerminal;
+
+#[derive(Component)]
+struct LogTerminal;
+
 #[derive(States, Debug, Hash, Eq, PartialEq, Copy, Clone, Default)]
 pub enum RunState {
     #[default]
@@ -102,7 +108,8 @@ fn setup(
     commands.spawn((
         Terminal::new(TERMINAL_DIMENSIONS),
             //.with_border(BoxStyle::DOUBLE_LINE),
-        TerminalMeshPivot::LeftTop
+        TerminalMeshPivot::LeftTop,
+        SetTerminalGridPosition(IVec2::new(0, 0))
     ));
    
     let mut builder = test_builder(0, 160, 90);
