@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_ascii_terminal::*;
-use crate::{Renderable, Position, Player, Map, tile_glyph, constants::*};
+use crate::{Renderable, Position, Player, Map, tile_glyph, constants::*, MapTerminal};
 
 /// This system is responsible for drawing entities and enviornment to the map
 /// 
@@ -9,7 +9,7 @@ use crate::{Renderable, Position, Player, Map, tile_glyph, constants::*};
 /// 
 /// It also draws all visible tiles within the `Map` Resource.
 pub fn render(
-    mut q_term: Query<&mut Terminal>,
+    mut q_term: Query<&mut Terminal, With<MapTerminal>>,
     q_player: Query<(Entity, &Position), With<Player>>,
     map: Res<Map>,
     q_entities: Query<(&Renderable, &Position)>,
@@ -65,7 +65,7 @@ pub fn render(
 }
 
 pub fn get_screen_bounds(player_pos: Position) -> (i32, i32, i32, i32){
-    let (x_chars, y_chars)= TERMINAL_DIMENSIONS.into();
+    let (x_chars, y_chars)= MAP_UI_DIMENSIONS.into();
 
     let center_x = x_chars as i32 / 2;
     let center_y = y_chars as i32 / 2;

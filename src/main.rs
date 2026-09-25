@@ -82,7 +82,7 @@ fn main() {
                 spawn_system
             ).chain(),
         )
-        .add_systems(Update, render)
+        .add_systems(PostUpdate, render)
         .run();
 }
 
@@ -91,6 +91,28 @@ fn setup(
     window: Single<&Window>,
 ) {
     let window_size = window.physical_size().as_vec2();
+
+    println!("Window size: {}", window_size);
+
+    
+
+    commands.spawn((
+        Terminal::new(MAP_UI_DIMENSIONS),
+            //.with_border(BoxStyle::DOUBLE_LINE),
+        TerminalMeshPivot::LeftTop,
+        MapTerminal,
+        Transform::from_xyz(200.0, 100.0, 0.0).with_translation(Vec3::new(0.0, 0.0, 0.0)),
+
+        
+        //SetTerminalGridPosition(IVec2::new(0, 0))
+    ));
+
+    commands.spawn((
+        Terminal::new([80, 10]).with_title("Console Log"),
+        //TerminalMeshPivot::LeftTop,
+        LogTerminal,
+        //Transform::from_xyz(0.0, 35.0, 0.0),
+    ));
 
     commands.spawn((
         Camera2d,
@@ -103,13 +125,6 @@ fn setup(
             ..default()
         },
         TerminalCamera::default(),
-    ));
-
-    commands.spawn((
-        Terminal::new(TERMINAL_DIMENSIONS),
-            //.with_border(BoxStyle::DOUBLE_LINE),
-        TerminalMeshPivot::LeftTop,
-        SetTerminalGridPosition(IVec2::new(0, 0))
     ));
    
     let mut builder = test_builder(0, 160, 90);
@@ -126,7 +141,9 @@ fn index_player(
     mut queue: ResMut<TimeManager>,
     mut q_player: Query<(Entity, &Position), With<Player>>,
     mut state: ResMut<NextState<RunState>>,
+    map_term: Query<&Terminal, With<MapTerminal>>
 ) {
+    //map_term.
     let (player_entity, pos) = q_player.single_mut().unwrap();
     queue.push(player_entity);
     
