@@ -1,6 +1,6 @@
 use bevy::prelude::*;
-use bevy_ascii_terminal::TerminalCamera;
-use crate::{Position, Player, RunState, SpawnNpc, NPC, Map, get_screen_bounds};
+use bevy_ascii_terminal::{TerminalCamera, Terminal};
+use crate::{Position, Player, RunState, SpawnNpc, NPC, Map, get_screen_bounds, MapTerminal};
 use super::WantsToMove;
 
 /// This system handles input from the player.
@@ -17,9 +17,13 @@ pub fn handle_input(
     mut next_state: ResMut<NextState<RunState>>,
     mut spawn: MessageWriter<SpawnNpc>,
     camera_q: Query<&TerminalCamera>,
+    mut cam2d_q: Query<&mut Transform, With<Camera2d>>,
+    mut map_term: Query<&mut Terminal, With<MapTerminal>>,
     mut map: ResMut<Map>,
 ) {
     if let Some(key) = kb_input.get_just_pressed().next() {
+        let mut transform = cam2d_q.single_mut().unwrap();
+        let mut term = map_term.single_mut().unwrap();
         let (player_entity, pos) = q_player.single_mut().unwrap();
         let mut new_pos = Position {x: pos.x, y: pos.y};
         match key {
@@ -58,6 +62,20 @@ pub fn handle_input(
                 let s_pos = Position {x: 80, y: 50};
                 spawn.write(SpawnNpc{position: s_pos, def_key: NPC::Villager});
             },
+            KeyCode::ArrowDown => {
+                transform.down();
+            },
+            KeyCode::ArrowUp => {
+                println!("up!");
+                let new_y = transform.translation.y - 1.0;
+                transform.translation.y = new_y;
+            },
+            KeyCode::ArrowLeft => {
+                println!("term: {:?}", term.width())
+            },
+            KeyCode::ArrowRight => {
+                    
+            }
             _ => ()
         }
         if new_pos != *pos {

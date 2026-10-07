@@ -29,7 +29,7 @@ use crate::systems::ai::{
 extern crate lazy_static;
 
 #[derive(Component)]
-struct MapTerminal;
+pub struct MapTerminal;
 
 #[derive(Component)]
 struct LogTerminal;
@@ -96,22 +96,27 @@ fn setup(
 
     
 
+    let transform = Transform::from_xyz(-220.0, 0.0, 0.0);
+    println!("Transform data: {:?}", transform);
     commands.spawn((
         Terminal::new(MAP_UI_DIMENSIONS),
             //.with_border(BoxStyle::DOUBLE_LINE),
         TerminalMeshPivot::LeftTop,
         MapTerminal,
-        Transform::from_xyz(200.0, 100.0, 0.0).with_translation(Vec3::new(0.0, 0.0, 0.0)),
+        Transform::from_xyz(0.0, 0.0, 0.0),
+        //SetTerminalGridPosition([0,0].into()),
 
         
         //SetTerminalGridPosition(IVec2::new(0, 0))
     ));
 
     commands.spawn((
-        Terminal::new([80, 10]).with_title("Console Log"),
+        Terminal::new([80, 10]).with_title("Console Log").with_border(BoxStyle::SINGLE_LINE),
         //TerminalMeshPivot::LeftTop,
         LogTerminal,
-        //Transform::from_xyz(0.0, 35.0, 0.0),
+        
+        //SetTerminalGridPosition([0,50].into()),
+        Transform::from_xyz(100.0, 0.0, 0.0),
     ));
 
     commands.spawn((
@@ -124,6 +129,7 @@ fn setup(
             }),
             ..default()
         },
+        //Transform::from_xyz(-100.0, 0.0, 0.0),
         TerminalCamera::default(),
     ));
    
@@ -143,9 +149,11 @@ fn index_player(
     mut state: ResMut<NextState<RunState>>,
     map_term: Query<&Terminal, With<MapTerminal>>
 ) {
-    //map_term.
+    let terminal = map_term.single().unwrap();
     let (player_entity, pos) = q_player.single_mut().unwrap();
     queue.push(player_entity);
+
+    //terminal.
     
     map.index_entity(player_entity, *pos, true);
     commands.queue(|world: &mut World| {
